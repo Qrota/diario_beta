@@ -1,0 +1,31 @@
+{
+  "categorias": [
+    {
+      "id": "alimentacao",
+      "keywords": ["mamar", "mamou", "fome", "leite", "peito", "formula", "comer"],
+      "respostas": {
+        "estavel": "O ritmo de mamadas está excelente e dentro da média do Gabriel.",
+        "baixo": "Notei que ele mamou menos que o habitual hoje. Fique de olho na hidratação.",
+        "dica": "💡 Dica: Se ele estiver irritado, pode ser um salto de desenvolvimento."
+      }
+    },
+    {
+      "id": "sono",
+      "keywords": ["dormiu", "sono", "soneca", "acordou", "noite"],
+      "respostas": {
+        "estavel": "O sono está bem regulado hoje.",
+        "baixo": "Ele teve menos janelas de sono hoje. Isso pode causar cansaço excessivo à noite.",
+        "dica": "💡 Dica: Tente o ritual do sono 30 minutos mais cedo hoje."
+      }
+    },
+    {
+      "id": "saude",
+      "keywords": ["febre", "remedio", "dor", "colica", "regurgitou", "chorando"],
+      "respostas": {
+        "alerta": "Identifiquei registros de desconforto. Se houver febre persistente, contate o pediatra.",
+        "vazio": "Não encontrei registros de intercorrências médicas hoje.",
+        "dica": "⚠️ Lembrete: Verifique sempre a dosagem recomendada pelo médico."
+      }
+    }
+  ]
+}
