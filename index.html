@@ -5,7 +5,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#fdfdfd">
-    <link rel="icon" href="logo_acalantobebe1.png" type="image/x-icon">
+    <link rel="icon" href="imagens/logo_acalantobebe1.png" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Assistente Inteligente | Diário do Gabriel</title>
@@ -178,7 +178,7 @@
         #loader {
             position: fixed; 
             inset: 0; 
-            background: #fdfdfd url("fundo09.png") center; 
+            background: #fdfdfd url("imagens/fundo09.png") center; 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
@@ -214,7 +214,7 @@
         .footer-logo { 
             width: 45px; 
             height: 45px; 
-            background: url('logo_acalantobebe1.png') center/contain no-repeat; 
+            background: url('imagens/logo_acalantobebe1.png') center/contain no-repeat; 
             margin: 18px auto 0; 
             opacity: 0.5; 
             filter: grayscale(100%); 
@@ -312,49 +312,70 @@
     // ==========================
     // 🌐 CONFIG API
     // ==========================
-    const API = "https://script.google.com/macros/s/AKfycbz1GgLF1TdNuvSpE1XpfQQNu4jidkd9KaSDDnieNzSy4S-CQ6LdHqCb_Ji3BA8f3f-V/exec";
+    const API = "https://script.google.com/macros/s/AKfycbzRN-ksLk_gaXzKxMp3mK4L_SDEpDRNmEYRjjHU5BL1Zo1cQYLw5CnbUmubI4E-xgjY/exec";
     let dadosOriginais = [];
     let frasesIA = {};
     let charts = {};
 
     // ==========================
-    // 🧠 CHAT ÁUREA - FALLBACK EMBUTIDO (CORREÇÃO PRINCIPAL)
+// 📱 FULLSCREEN (ROBUSTO)
+// ==========================
+function entrarFullscreen() {
+    const el = document.documentElement;
+
+    if (document.fullscreenElement) return;
+
+    if (el.requestFullscreen) {
+        el.requestFullscreen();
+    } else if (el.webkitRequestFullscreen) { // Safari
+        el.webkitRequestFullscreen();
+    } else if (el.msRequestFullscreen) { // IE11
+        el.msRequestFullscreen();
+    }
+}
+
+// Ativa em qualquer interação (mais confiável)
+["click", "touchstart"].forEach(evt => {
+    document.addEventListener(evt, entrarFullscreen);
+});    
+
+    // ==========================
+    // 🧠 CHAT ÁUREA - FALLBACK EMBUTIDO
     // ==========================
     let baseFAQ = null;
     let historicoChat = [];
 
-    // ----- FAQ interno padrão (caso o JSON externo falhe) -----
     const FALLBACK_FAQ = {
         intents: [
             {
                 name: "sono",
                 keywords: ["sono", "dormir", "acordar", "rotina sono", "noite"],
                 patterns: ["como melhorar o sono", "bebê não dorme", "horário de dormir"],
-                responses: ["😴 Tente criar uma rotina relaxante antes do sono: banho morno, luz baixa e uma música calma.", "💤 O ideal para a idade do Gabriel é de 14 a 17h de sono por dia. Está próximo disso?"]
+                responses: ["😴 Tente criar uma rotina relaxante antes do sono: banho morno, luz baixa e uma música calma.", "💤 O ideal para a idade do Gabriel é de 14 a 17h de sono por dia."]
             },
             {
                 name: "amamentacao",
                 keywords: ["amamentar", "mamar", "peito", "leite", "mamada"],
                 patterns: ["quanto tempo mamar", "bebê não quer mamar", "intervalo amamentação"],
-                responses: ["🍼 Ofereça o peito sempre que ele demonstrar fome. Em média, recém-nascidos mamam a cada 2-3 horas.", "👶 A amamentação em livre demanda é a mais indicada. Observe os sinais de fome do Gabriel."]
+                responses: ["🍼 Ofereça o peito sempre que ele demonstrar fome. Em média, a cada 2-3 horas.", "👶 A amamentação em livre demanda é a mais indicada."]
             },
             {
                 name: "choro",
                 keywords: ["choro", "chorar", "chora", "chorando", "desconforto"],
                 patterns: ["bebê chora muito", "como acalmar", "cólica"],
-                responses: ["💛 Verifique fome, fralda suja, cansaço ou cólicas. Uma massagem suave na barriga pode aliviar.", "🎶 Tente um barulho branco ou embalar suavemente. O contato pele a pele também ajuda muito."]
+                responses: ["💛 Verifique fome, fralda suja ou cansaço. Uma massagem suave na barriga ajuda.", "🎶 Tente um barulho branco ou contato pele a pele."]
             },
             {
                 name: "fralda",
                 keywords: ["fralda", "trocar", "xixi", "cocô"],
                 patterns: ["quantas fraldas", "trocar fralda quantas vezes"],
-                responses: ["🧷 Em média, 6 a 8 fraldas por dia é saudável. Menos que isso pode indicar pouca hidratação.", "🚼 Fraldas muito secas por várias horas merecem atenção. Ofereça líquidos com mais frequência."]
+                responses: ["🧷 Em média, 6 a 8 fraldas por dia é saudável.", "🚼 Fraldas muito secas por várias horas merecem atenção."]
             },
             {
                 name: "saude",
                 keywords: ["febre", "vômito", "diarreia", "remédio", "medicação"],
-                patterns: ["bebê está doente", "temperatura alta", "o que fazer", "devo levar ao médico"],
-                responses: ["⚠️ Febre acima de 38°C em bebês pequenos merece atendimento médico rápido.", "💊 Não medique por conta própria. Consulte sempre o pediatra do Gabriel."]
+                patterns: ["bebê está doente", "temperatura alta", "o que fazer"],
+                responses: ["⚠️ Febre acima de 38°C em bebês pequenos merece atendimento médico.", "💊 Não medique por conta própria. Consulte o pediatra."]
             }
         ]
     };
@@ -427,40 +448,20 @@
     return melhorResposta;
 }
 
-    // ----- UI do Chat -----
-    function toggleChat() {
-        const chat = document.getElementById("chatWindow");
-        chat.style.display = chat.style.display === "flex" ? "none" : "flex";
-    }
-
-    function handleChatKey(e) {
-        if (e.key === "Enter") sendMessage();
-    }
-
+    function toggleChat() { const chat = document.getElementById("chatWindow"); chat.style.display = chat.style.display === "flex" ? "none" : "flex"; }
+    function handleChatKey(e) { if (e.key === "Enter") sendMessage(); }
     function sendMessage() {
-        const input = document.getElementById("userInput");
-        const texto = input.value.trim();
-        if (!texto) return;
-        appendMsg(texto, "user");
-        input.value = "";
-        // Mostra "digitando..." por 0.5s
-        setTimeout(() => {
-            const resp = responderAurea(texto);
-            appendMsg(resp, "aurea");
-        }, 500);
+        const input = document.getElementById("userInput"); const texto = input.value.trim();
+        if (!texto) return; appendMsg(texto, "user"); input.value = "";
+        setTimeout(() => { appendMsg(responderAurea(texto), "aurea"); }, 500);
     }
-
     function appendMsg(txt, side) {
-        const body = document.getElementById("chatBody");
-        const div = document.createElement("div");
-        div.className = `msg ${side}`;
-        div.innerHTML = txt;
-        body.appendChild(div);
-        body.scrollTop = body.scrollHeight;
+        const body = document.getElementById("chatBody"); const div = document.createElement("div");
+        div.className = `msg ${side}`; div.innerHTML = txt; body.appendChild(div); body.scrollTop = body.scrollHeight;
     }
 
     // ==========================
-    // 📊 DADOS E GRÁFICOS (do seu sistema original)
+    // 📊 DADOS E GRÁFICOS (CORRIGIDO)
     // ==========================
     function hexToRgb(hex) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -469,10 +470,8 @@
 
     function updateChart(id, ctxId, label, dias, hexColor) {
         if (charts[id]) charts[id].destroy();
-        const canvas = document.getElementById(ctxId);
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        const rgb = hexToRgb(hexColor);
+        const canvas = document.getElementById(ctxId); if (!canvas) return;
+        const ctx = canvas.getContext('2d'); const rgb = hexToRgb(hexColor);
         const gradient = ctx.createLinearGradient(0, 0, 0, 200);
         gradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`);
         gradient.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.01)`);
@@ -483,27 +482,11 @@
                 datasets: [{
                     label: label,
                     data: Object.values(dias).map(d => d[id]),
-                    borderColor: hexColor,
-                    backgroundColor: gradient,
-                    fill: true,
-                    tension: 0.45,
-                    borderWidth: 3.5,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: hexColor,
-                    pointBorderWidth: 2.5,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
+                    borderColor: hexColor, backgroundColor: gradient, fill: true, tension: 0.45, borderWidth: 3.5,
+                    pointBackgroundColor: '#ffffff', pointBorderColor: hexColor, pointBorderWidth: 2.5, pointRadius: 4
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 11 } } },
-                    y: { grid: { borderDash: [4,4] }, ticks: { color: '#94a3b8', stepSize: 1, beginAtZero: true } }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
         });
     }
 
@@ -516,12 +499,11 @@
 
     function popularFiltro(dados) {
         const select = document.getElementById("filtroData");
-        const datas = [...new Set(dados.map(item => new Date(item.Data).toLocaleDateString('pt-BR')))].sort((a,b) => b.split('/').reverse().join('').localeCompare(a.split('/').reverse().join('')));
+        select.innerHTML = '<option value="todos">Todo o Histórico</option>';
+        const datas = [...new Set(dados.map(item => new Date(item.Data).toLocaleDateString('pt-BR')))]
+            .sort((a,b) => b.split('/').reverse().join('').localeCompare(a.split('/').reverse().join('')));
         datas.forEach(data => {
-            const opt = document.createElement("option");
-            opt.value = data;
-            opt.textContent = data;
-            select.appendChild(opt);
+            const opt = document.createElement("option"); opt.value = data; opt.textContent = data; select.appendChild(opt);
         });
     }
 
@@ -533,8 +515,7 @@
 
     function getFrase(lista, ind) {
         if (!lista || lista.length === 0) return "";
-        const frase = lista[Math.floor(Math.random() * lista.length)];
-        return frase.replace(/\${ind\.r}/g, ind.r);
+        return lista[Math.floor(Math.random() * lista.length)].replace(/\${ind\.r}/g, ind.r);
     }
 
     function processar(dados) {
@@ -547,8 +528,8 @@
             let obs = (item.Observação || "").toLowerCase();
             if (at.includes("amamentacao")) { indicadores.m++; dias[data].m++; }
             if (at.includes("sono")) { indicadores.s++; dias[data].s++; }
-            if (at.includes("fralda")) { indicadores.f++; dias[data].f++; }
-            if (at.includes("medicacao")) { indicadores.d++; dias[data].d++; }
+            if (at.includes("fralda") || at.includes("xixi") || at.includes("coco")) { indicadores.f++; dias[data].f++; }
+            if (at.includes("medicacao") || at.includes("remedio")) { indicadores.d++; dias[data].d++; }
             if (obs.includes("regurg")) indicadores.r++;
         });
         gerarIA(indicadores, dias);
@@ -557,79 +538,47 @@
 
     function gerarIA(ind, dias) {
         if (!frasesIA.amamentacao) return;
-        let msg = [];
-        let nivel = "ok";
+        let msg = []; let nivel = "ok";
         if (ind.m === 0) { msg.push(`🍼 ${getFrase(frasesIA.amamentacao.critico, ind)}`); nivel = "danger"; }
-        else if (ind.m < 5) { msg.push(`🍼 ${getFrase(frasesIA.amamentacao.baixo, ind)}`); if(nivel!=="danger") nivel="warn"; }
+        else if (ind.m < 5) { msg.push(`🍼 ${getFrase(frasesIA.amamentacao.baixo, ind)}`); nivel = "warn"; }
         else if (ind.m >= 8 && ind.m <= 12) msg.push(`🍼 ${getFrase(frasesIA.amamentacao.ideal, ind)}`);
         else if (ind.m > 12) msg.push(`🍼 ${getFrase(frasesIA.amamentacao.alto, ind)}`);
-        
         if (ind.s < 3) { msg.push(`😴 ${getFrase(frasesIA.sono.baixo, ind)}`); if(nivel!=="danger") nivel="warn"; }
         else msg.push(`💤 ${getFrase(frasesIA.sono.ok, ind)}`);
-        
         if (ind.r === 0) msg.push(`✨ ${getFrase(frasesIA.saude.top, ind)}`);
         else if (ind.r <= 2) msg.push(`🔎 ${getFrase(frasesIA.saude.leve, ind)}`);
         else { msg.push(`💛 ${getFrase(frasesIA.saude.alerta, ind)}`); nivel = "danger"; }
-        
         let catF = ind.f < 4 ? "baixo" : ind.f <= 5 ? "bom" : ind.f <= 8 ? "otimo" : "excelente";
         msg.push(`🧷 ${getFrase(frasesIA.fraldas[catF], ind)}`);
-        if (catF === "baixo" && nivel !== "danger") nivel = "warn";
-        
         const box = document.getElementById("relatorioIA");
-        box.innerHTML = msg.length ? msg.map(l => `<div class="relatorio-item">${l}</div>`).join("") : "<div>Analisando dados...</div>";
+        box.innerHTML = msg.map(l => `<div class="relatorio-item">${l}</div>`).join("");
         aplicarTemaDinamico(nivel);
     }
 
     function aplicarTemaDinamico(status = "ok") {
-        const el = document.querySelector(".container");
-        if (!el) return;
-        const hora = new Date().getHours();
-        let cor1, cor2, cor3;
-        if (hora >= 6 && hora < 12) { cor1 = "rgba(255,228,196,0.5)"; cor2 = "rgba(255,248,220,0.5)"; cor3 = "rgba(255,218,185,0.45)"; }
-        else if (hora >= 12 && hora < 18) { cor1 = "rgba(173,216,230,0.45)"; cor2 = "rgba(152,251,152,0.35)"; cor3 = "rgba(255,255,240,0.5)"; }
-        else { cor1 = "rgba(72,61,139,0.4)"; cor2 = "rgba(25,25,112,0.35)"; cor3 = "rgba(138,43,226,0.3)"; document.body.style.background = "#0f172a"; }
-        if (status === "danger") { cor1 = "rgba(239,68,68,0.4)"; cor2 = "rgba(249,115,22,0.35)"; cor3 = "rgba(254,226,226,0.4)"; }
-        if (status === "warn") { cor1 = "rgba(245,158,11,0.4)"; cor2 = "rgba(250,204,21,0.35)"; cor3 = "rgba(254,243,199,0.4)"; }
-        el.style.setProperty("--cor1", cor1); el.style.setProperty("--cor2", cor2); el.style.setProperty("--cor3", cor3);
-        const cardInsights = document.getElementById("cardRelatorio");
-        if (cardInsights) cardInsights.className = `glass-card aurea-insight ${status}`;
+        const el = document.querySelector(".container"); if (!el) return;
+        let c1 = "rgba(173,216,230,0.45)", c2 = "rgba(152,251,152,0.35)", c3 = "rgba(255,255,240,0.5)";
+        if (status === "danger") { c1 = "rgba(239,68,68,0.4)"; c2 = "rgba(249,115,22,0.35)"; c3 = "rgba(254,226,226,0.4)"; }
+        if (status === "warn") { c1 = "rgba(245,158,11,0.4)"; c2 = "rgba(250,204,21,0.35)"; c3 = "rgba(254,243,199,0.4)"; }
+        el.style.setProperty("--cor1", c1); el.style.setProperty("--cor2", c2); el.style.setProperty("--cor3", c3);
+        const card = document.getElementById("cardRelatorio"); if (card) card.className = `glass-card aurea-insight ${status}`;
     }
 
     async function init() {
-        const loader = document.getElementById('loader');
-        const content = document.getElementById('app-content');
+        const loader = document.getElementById('loader'); const content = document.getElementById('app-content');
         try {
             const [resDados, resFrases] = await Promise.all([fetch(API), fetch('frases.json')]);
-            if (!resDados.ok || !resFrases.ok) throw new Error('Erro nas requisições');
-            dadosOriginais = await resDados.json();
-            frasesIA = await resFrases.json();
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.style.visibility = 'hidden';
-                content.style.visibility = 'visible';
-                content.style.opacity = '1';
-            }, 600);
-            popularFiltro(dadosOriginais);
-            processar(dadosOriginais);
+            if (!resDados.ok || !resFrases.ok) throw new Error();
+            dadosOriginais = await resDados.json(); frasesIA = await resFrases.json();
+            loader.style.opacity = '0'; setTimeout(() => { loader.style.visibility = 'hidden'; content.style.visibility = 'visible'; content.style.opacity = '1'; }, 600);
+            popularFiltro(dadosOriginais); processar(dadosOriginais);
         } catch (e) {
-            console.error(e);
-            document.getElementById("relatorioIA").innerHTML = "<div class='relatorio-item'>❌ Erro ao conectar com a base de dados do Gabriel.</div>";
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.style.visibility = 'hidden';
-                content.style.visibility = 'visible';
-                content.style.opacity = '1';
-            }, 600);
+            document.getElementById("relatorioIA").innerHTML = "<div class='relatorio-item'>❌ Erro ao conectar com os dados.</div>";
+            loader.style.opacity = '0'; setTimeout(() => { loader.style.visibility = 'hidden'; content.style.visibility = 'visible'; content.style.opacity = '1'; }, 600);
         }
     }
 
-    // ==========================
-    // 🚀 INICIALIZAÇÃO PRINCIPAL
-    // ==========================
-    (async function start() {
-        await carregarFAQ();      // garante FAQ carregado antes do chat ficar ativo
-        init();                  // carrega gráficos e dados
-    })();
+    (async function start() { await carregarFAQ(); init(); })();
 </script>
 </body>
 </html>
