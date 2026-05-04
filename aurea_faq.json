@@ -1,0 +1,692 @@
+{
+  "intents": [
+    {
+  
+  "tag": "amamentacao",
+  "intents": [
+    {
+      "patterns": [
+        "meu bebe mama pouco",
+        "bebê mama pouco",
+        "meu filho não mama direito",
+        "bebê não está mamando o suficiente"
+      ],
+      "response": "A amamentação é em livre demanda. Se o bebê mama com frequência, isso é esperado."
+    },
+    {
+      "patterns": [
+        "dificuldade para amamentar",
+        "estou com dificuldade na amamentação",
+        "amamentação está difícil"
+      ],
+      "response": "Se houver dor, pode ser pega incorreta. Ajustar a posição costuma ajudar bastante."
+    },
+    {
+      "patterns": [
+        "leite fraco existe",
+        "meu leite é fraco",
+        "tenho leite fraco",
+        "leite materno fraco"
+      ],
+      "response": "Não existe leite fraco. O importante é observar ganho de peso e saciedade."
+    },
+    {
+      "patterns": [
+        "como saber se mamou o suficiente",
+        "como saber se o bebê mamou o suficiente",
+        "meu bebê mamou o suficiente?"
+      ],
+      "response": "Sinais de boa mamada: bebê relaxado, ouve engolir, faz cocô e xixi várias vezes ao dia e ganha peso."
+    },
+    {
+      "patterns": [
+        "bebê chora depois de mamar",
+        "chora após mamada",
+        "bebê fica inquieto depois de mamar"
+      ],
+      "response": "Choro após a mamada pode ser por causa de gases ou cólicas. Coloque o bebê para arrotar bem."
+    },
+    {
+      "patterns": [
+        "como aumentar produção de leite",
+        "leite está diminuindo",
+        "como produzir mais leite",
+        "aumentar o leite materno",
+        "minha produção de leite caiu"
+      ],
+      "response": "Para aumentar a produção: amamente com mais frequência, beba muita água e alimente-se bem."
+    },
+    {
+      "patterns": [
+        "amamentação exclusiva até quando",
+        "até quantos meses amamentação exclusiva",
+        "quando parar amamentação exclusiva"
+      ],
+      "response": "A OMS recomenda amamentação exclusiva até os 6 meses. Depois, pode complementar com papinhas."
+    },
+    {
+      "patterns": [
+        "bebê mama só de um peito",
+        "prefere só um peito",
+        "não mama dos dois peitos"
+      ],
+      "response": "É normal o bebê preferir um peito. Ofereça o outro primeiro na próxima mamada."
+    },
+    {
+      "patterns": [
+        "dor nos mamilos ao amamentar",
+        "mamilos doendo ao amamentar",
+        "dor no bico do peito"
+      ],
+      "response": "Dor nos mamilos geralmente melhora com a pega correta. Deixe o mamilo secar ao ar livre."
+    },
+    {
+      "patterns": [
+        "leite materno aguado",
+        "meu leite está aguado",
+        "leite parece água"
+      ],
+      "response": "Leite 'aguado' é normal no início da mamada (leite anterior). O leite posterior é mais gorduroso."
+    },
+    {
+      "patterns": [
+        "bebê dorme muito e mama pouco",
+        "bebê dorminhoco mama pouco",
+        "meu bebê dorme o tempo todo"
+      ],
+      "response": "Bebê que dorme muito pode precisar de estímulo para mamar. Acorde a cada 3 horas se for recém-nascido."
+    },
+    {
+      "patterns": [
+        "sinais de que o bebê está mamando bem",
+        "sinais de boa amamentação",
+        "como saber se está mamando certo"
+      ],
+      "response": "Sinais de boa mamada: bebê relaxado, ouve engolir, faz cocô e xixi várias vezes ao dia e ganha peso."
+    },
+    {
+      "patterns": [
+        "como tirar leite com as mãos",
+        "ordenha manual",
+        "como fazer ordenha manual"
+      ],
+      "response": "Aperte o peito em forma de C e faça movimentos ondulatórios para tirar leite manualmente."
+    },
+    {
+      "patterns": [
+        "posso tomar medicamento amamentando",
+        "remédio pode tomar amamentando",
+        "medicamento compatível com amamentação"
+      ],
+      "response": "Muitos medicamentos são compatíveis com a amamentação. Consulte sempre o pediatra ou consulte a lista do e-lactancia."
+    },
+    {
+      "patterns": [
+        "mastite sintomas e o que fazer",
+        "sintomas de mastite",
+        "acho que estou com mastite"
+      ],
+      "response": "Mastite costuma causar febre, inchaço e vermelhidão. Continue amamentando e procure ajuda médica rapidamente."
+    },
+    {
+      "patterns": [
+        "como armazenar leite materno",
+        "armazenamento de leite materno",
+        "como guardar leite materno"
+      ],
+      "response": "Leite materno pode ser armazenado na geladeira por até 4 dias ou no freezer por até 6 meses."
+    },
+    {
+      "patterns": [
+        "volta ao trabalho amamentando",
+        "como voltar a trabalhar amamentando",
+        "amamentação e trabalho"
+      ],
+      "response": "Na volta ao trabalho, tire leite com antecedência e mantenha a amamentação direta nos horários possíveis."
+    },
+    {
+      "patterns": [
+        "desmame gradual como fazer",
+        "como fazer desmame gradual",
+        "desmamar o bebê"
+      ],
+      "response": "O desmame deve ser gradual e respeitoso. Substitua uma mamada por vez por mamadeira ou copinho."
+    },
+    {
+      "patterns": [
+        "amamentar gêmeos é possível",
+        "amamentação de gêmeos",
+        "como amamentar dois bebês"
+      ],
+      "response": "Sim, é possível amamentar gêmeos! Amamente os dois juntos ou alterne. Peça apoio de consultora de amamentação."
+    },
+    {
+      "patterns": [
+        "bebê regurgita muito depois da mamada",
+        "regurgitação após mamar",
+        "bebê vomita leite depois de mamar"
+      ],
+      "response": "Regurgitação pequena é normal. Se for muito volume ou o bebê não ganhar peso, fale com o pediatra."
+    },
+    {
+      "patterns": [
+        "amamentação noturna é obrigatória",
+        "preciso amamentar de noite",
+        "mamadas noturnas"
+      ],
+      "response": "Mamadas noturnas são importantes especialmente nos primeiros meses para manter a produção de leite."
+    },
+    {
+      "patterns": [
+        "pega incorreta como corrigir",
+        "Como corrigir pega incorreta",
+        "bebê pega errado",
+        "corrigir a pega da mama"
+      ],
+      "response": "Para corrigir a pega: boca bem aberta, lábio inferior virado para fora, queixo encostado no peito."
+    },
+    {
+      "patterns": [
+        "leite empedrado o que fazer",
+        "peito empedrado",
+        "leite travado"
+      ],
+      "response": "Leite empedrado melhora com mamadas frequentes, compressas quentes e massagem suave."
+    },
+    {
+      "patterns": [
+        "meu bebê quer mamar toda hora",
+        "bebê quer mamar o tempo todo",
+        "mamadas muito frequentes",
+        "bebê fica pedindo peito sempre"
+      ],
+      "response": "A amamentação é em livre demanda. Se o bebê mama com frequência, isso é esperado. Bebês têm estômago pequeno e mamam com frequência. Isso é normal e ajuda na produção de leite."
+    },
+
+    {
+      "patterns": [
+        "transição para copo",
+        "como tirar a mamadeira",
+        "passar para copinho",
+        "transição copo ou mamadeira"
+      ],
+      "response": "A transição para o copo pode começar por volta dos 6-8 meses. Comece oferecendo água ou leite materno no copinho de transição, sem forçar. O ideal é evitar mamadeira quando possível."
+    },
+    {
+      "patterns": [
+        "armazenamento leite materno temperatura ambiente",
+        "quanto tempo leite materno fora da geladeira",
+        "leite materno em temperatura ambiente"
+      ],
+      "response": "Leite materno recém-tirado pode ficar em temperatura ambiente (até 25°C) por até 4 horas. Após esse tempo, deve ser refrigerado ou congelado."
+    },
+    {
+      "patterns": [
+        "remédios caseiros para aumentar leite",
+        "chá para aumentar leite",
+        "alimentos que aumentam leite materno",
+        "como aumentar leite naturalmente"
+      ],
+      "response": "Alguns alimentos ajudam: aveia, fenugrego (alholva), gengibre, cominho, sementes de erva-doce e água de cevada. Mas o mais importante continua sendo: mamadas frequentes, boa hidratação e descanso."
+    }
+  ],
+  "keywords": ["amamentar", "leite", "mamou", "mamar", "peito", "mamada", "produção", "dor", "mastite", "colostro", "pega", "ordenha", "copo", "armazenar"]
+},
+    {
+  "tag": "sono",
+  "intents": [
+    {
+      "patterns": [
+        "bebe acorda muito a noite",
+        "bebê acorda várias vezes à noite",
+        "meu bebê não dorme a noite toda",
+        "acorda muito durante a noite",
+        "noites mal dormidas"
+      ],
+      "response": "É normal o bebê acordar à noite nos primeiros meses. O sono fragmentado é típico até pelo menos 6-9 meses."
+    },
+    {
+      "patterns": [
+        "como fazer bebe dormir",
+        "como fazer o bebê dormir",
+        "dicas para bebê dormir melhor",
+        "bebê não quer dormir",
+        "como fazer o bebê pegar no sono"
+      ],
+      "response": "Criar um ritual de sono consistente ajuda muito: banho, massagem, luz baixa, ambiente calmo e soninho no mesmo horário todos os dias."
+    },
+    {
+      "patterns": [
+        "rotina de sono bebe",
+        "qual a melhor rotina de sono para bebê",
+        "rotina para bebê dormir",
+        "horário ideal de sono do bebê"
+      ],
+      "response": "Uma boa rotina inclui horários regulares de sonecas e dormir à noite. Bebês até 3 meses dormem bastante durante o dia, mas aos poucos o sono noturno fica mais longo."
+    },
+    {
+      "patterns": [
+        "bebê só dorme no colo",
+        "bebê não dorme no berço",
+        "quer dormir só no colo",
+        "dormir no colo"
+      ],
+      "response": "É comum nos primeiros meses. Aos poucos, ensine o bebê a dormir no berço colocando-o sonolento, mas acordado. Use método gentil e consistente."
+    },
+    {
+      "patterns": [
+        "bebê tem sono agitado",
+        "bebê se mexe muito dormindo",
+        "sono leve do bebê"
+      ],
+      "response": "Bebês têm sono leve e ativo. É normal se mexerem, fazerem barulhinhos e acordarem facilmente. Isso faz parte do desenvolvimento do sono."
+    },
+    {
+      "patterns": [
+        "quantas horas bebê deve dormir",
+        "quantas sonecas por dia",
+        "duração do sono do bebê"
+      ],
+      "response": "Recém-nascidos dormem de 14 a 17 horas por dia. Aos 6 meses, costumam dormir cerca de 12-14 horas, incluindo sonecas."
+    },
+    {
+      "patterns": [
+        "como tirar soneca durante o dia",
+        "bebê não tira soneca",
+        "sonecas diurnas"
+      ],
+      "response": "Mantenha o ambiente escuro e use ruído branco. Respeite os sinais de sono (bocejo, esfregar olhos) para não deixar o bebê passar do ponto de cansaço."
+    },
+    {
+      "patterns": [
+        "método de sono bebê",
+        "deixar chorar ou não",
+        "treinamento de sono"
+      ],
+      "response": "Existem vários métodos. O mais importante é escolher um que respeite o bebê e com o qual os pais se sintam confortáveis. Métodos suaves são recomendados nos primeiros meses."
+    },
+    {
+      "patterns": [
+        "bebê acorda de hora em hora",
+        "acorda toda hora à noite",
+        "sono fragmentado"
+      ],
+      "response": "Nos primeiros meses é muito comum. Verifique se está com fome, frio, calor, fralda suja ou precisa de aconchego."
+    },
+    {
+      "patterns": [
+        "ambiente para bebê dormir",
+        "como preparar o quarto para o bebê dormir",
+        "dicas de quarto do bebê"
+      ],
+      "response": "Mantenha o quarto escuro, fresco (18-22°C), com ruído branco e sem telas. Use um colchão firme e sem travesseiro nos primeiros meses."
+    },
+    {
+      "patterns": [
+        "regressão de sono",
+        "regressão do sono",
+        "bebê regrediu no sono",
+        "regressão de sono 4 meses",
+        "regressão de sono 8 meses"
+      ],
+      "response": "As regressões de sono são fases normais de desenvolvimento (geralmente aos 4, 8-10 e 12 meses). São temporárias e costumam durar de 2 a 6 semanas. Mantenha a rotina e ofereça mais conforto."
+    },
+    {
+      "patterns": [
+        "cólicas noturnas",
+        "bebê chora de cólica à noite",
+        "cólica no período noturno",
+        "choro inconsolável à noite"
+      ],
+      "response": "Cólicas são comuns entre 2 semanas e 4 meses. Coloque o bebê para arrotar bem, use massagem na barriga, compressa morna e posição de 'aviãozinho'. Se for muito intenso, consulte o pediatra."
+    },
+    {
+      "patterns": [
+        "cosleeping",
+        "dormir junto com o bebê",
+        "co-sleeping",
+        "dormir na mesma cama",
+        "bed sharing"
+      ],
+      "response": "O cosleeping seguro pode ser feito seguindo regras rígidas de segurança: colchão firme, sem travesseiros ou cobertores soltos, bebê de barriga para cima e pais não fumantes. Consulte as diretrizes de segurança."
+    },
+    {
+      "patterns": [
+        "dentição atrapalhando sono",
+        "bebê nascendo dente acorda muito",
+        "sono e dentição",
+        "dor de dente à noite"
+      ],
+      "response": "A dentição pode deixar o bebê desconfortável e atrapalhar o sono. Ofereça mordedores gelados, massageie a gengiva com o dedo limpo e, se necessário, consulte o pediatra sobre o uso de analgésicos adequados para a idade."
+    },
+    {
+      "patterns": [
+        "bebê confunde dia e noite",
+        "dorme mais de dia e acorda de noite",
+        "sono invertido"
+      ],
+      "response": "É comum nos primeiros meses. Para corrigir, exponha o bebê à luz natural durante o dia, faça atividades e barulho normal. À noite, mantenha ambiente escuro, silencioso e sem estímulos. Aos poucos ele ajusta o ciclo."
+    },
+    {
+      "patterns": [
+        "bebê acorda cedo demais",
+        "acorda às 5h da manhã",
+        "bebê desperta muito cedo"
+      ],
+      "response": "Acordar entre 5h e 6h é comum, mas se for muito cedo, verifique a rotina da noite anterior. Quarto escuro até o horário desejado, soneca da tarde não muito tarde e garantir que não esteja com fome ou frio podem ajudar."
+    },
+    {
+      "patterns": [
+        "chorar na hora de dormir",
+        "bebê chora antes de dormir",
+        "choro do sono"
+      ],
+      "response": "Algum choro ao dormir pode ser normal (choro de liberação de energia). Se for intenso, observe sinais de cansaço excessivo ou desconforto. Um ritual calmo e previsível reduz a ansiedade na hora de dormir."
+    },
+    {
+      "patterns": [
+        "transição do berço para a cama",
+        "quando trocar berço por cama",
+        "sair do berço"
+      ],
+      "response": "A transição geralmente acontece entre 1,5 e 3 anos. Faça quando a criança tentar escalar o berço ou pedir. Use uma cama baixa, com grades laterais, e mantenha rotina para dar segurança."
+    },
+    {
+      "patterns": [
+        "bebê com refluxo dorme mal",
+        "refluxo atrapalha sono",
+        "sono do bebê com refluxo"
+      ],
+      "response": "Bebês com refluxo podem acordar mais devido a desconforto. Após mamar, mantenha-o na posição vertical por 20-30 minutos. Eleve levemente a cabeceira do berço (com um livro sob as pernas, nunca travesseiro). Consulte o pediatra para tratamento adequado."
+    },
+    {
+      "patterns": [
+        "usar chupeta para dormir",
+        "chupeta e sono do bebê",
+        "bebê só dorme com chupeta"
+      ],
+      "response": "A chupeta pode ajudar a acalmar e é um fator protetor contra SMSL (Síndrome da Morte Súbita) no primeiro ano. Ofereça na hora de dormir. Se cair e o bebê acordar, você pode recolocar ou ensinar ele a encontrar sozinho depois dos 6 meses."
+    },
+    {
+      "patterns": [
+        "bebê suando enquanto dorme",
+        "bebê transpira muito no sono",
+        "suor noturno em bebês"
+      ],
+      "response": "É normal bebês suarem a cabeça durante o sono profundo, pois sua termorregulação ainda é imatura. Mantenha o quarto fresco (18-22°C) e vista roupas leves. Se houver suor excessivo com outros sintomas (perda de peso, tosse), consulte o pediatra."
+    }
+  ],
+  "keywords": [
+    "sono",
+    "dormir",
+    "acorda",
+    "noite",
+    "soneca",
+    "rotina",
+    "berço",
+    "colo",
+    "regressão",
+    "cólica",
+    "cosleeping",
+    "dentição",
+    "refluxo",
+    "chupeta",
+    "invertido",
+    "cedo",
+    "transição",
+    "suor"
+  ]
+},
+    {
+  "tag": "choro",
+  "intents": [
+    {
+      "patterns": [
+        "bebe chora muito",
+        "bebê chora muito",
+        "meu bebê chora demais",
+        "choro excessivo",
+        "bebê chora o tempo todo"
+      ],
+      "response": "O choro pode ser fome, sono, fralda ou necessidade de colo. Com o tempo você vai identificar os tipos de choro."
+    },
+    {
+      "patterns": [
+        "nao sei porque ele chora",
+        "não sei porque o bebê chora",
+        "como saber por que o bebê chora",
+        "tipos de choro do bebê"
+      ],
+      "response": "Observe padrões ao longo do dia. Os principais motivos são fome, sono, desconforto, cólica ou necessidade de colo."
+    },
+    {
+      "patterns": [
+        "bebê chora sem parar",
+        "choro inconsolável",
+        "choro excessivo",
+        "bebê chora desesperado"
+      ],
+      "response": "Quando o bebê chora sem parar e nada acalma, pode ser sinal de doença (otite, refluxo, infecção). Meça a temperatura e observe outros sinais."
+    },
+    {
+      "patterns": [
+        "bebê chora depois de mamar",
+        "choro após mamada",
+        "chora depois de mamar"
+      ],
+      "response": "Choro ao mamar pode indicar refluxo, sapinho ou dificuldade para pegar o peito. Consulte um especialista em amamentação ou pediatra."
+    },
+    {
+      "patterns": [
+        "choro ao pegar no colo",
+        "chora quando pego no colo",
+        "não gosta de colo"
+      ],
+      "response": "Pode ser cólica, desconforto ou excesso de estímulo. Tente posição de 'aviãozinho' ou massagem na barriga."
+    },
+    {
+      "patterns": [
+        "bebê chora quando coloco no berço",
+        "chora ao deitar no berço",
+        "não quer ficar no berço"
+      ],
+      "response": "Choro ao ser colocado no berço: o bebê pode querer colo ou ter medo de separação. Tente colocá-lo sonolento, mas acordado."
+    },
+    {
+      "patterns": [
+        "choro à noite sem motivo",
+        "choro noturno",
+        "bebê chora muito à noite"
+      ],
+      "response": "Choro de cólica aparece geralmente no fim da tarde e à noite, com pernas encolhidas e barriga dura. Tente massagem e posição de 'aviãozinho'."
+    },
+    {
+      "patterns": [
+        "bebê chora de dor",
+        "choro de dor",
+        "choro agudo e estridente"
+      ],
+      "response": "Choro de dor ou cólica é agudo, estridente e de início súbito. As perninhas ficam puxadas em direção à barriga."
+    },
+    {
+      "patterns": [
+        "choro de fome ou de cansaço",
+        "diferença entre choro de fome e choro de sono",
+        "como diferenciar choro de fome"
+      ],
+      "response": "Choro de fome geralmente é rítmico, curto e grave. O bebê vira a cabeça procurando o seio. Choro de sono costuma ser irritado, com bocejos e esfregar os olhos."
+    },
+    {
+      "patterns": [
+        "bebê chora quando acordo",
+        "choro ao acordar",
+        "chora ao despertar"
+      ],
+      "response": "Pode ser fome, susto ou necessidade de reconforto. Ofereça colo ou peito para acalmar."
+    },
+    {
+      "patterns": [
+        "bebê chora no banho",
+        "choro durante o banho",
+        "não gosta de tomar banho"
+      ],
+      "response": "Pode ser frio, medo da água ou excesso de estímulo. Mantenha o ambiente quente e calmo durante o banho."
+    },
+    {
+      "patterns": [
+        "choro de desconforto",
+        "choro por desconforto"
+      ],
+      "response": "Verifique fralda, roupa apertada, temperatura e gases. Muitas vezes o choro de desconforto melhora com colo e movimento suave."
+    },
+    {
+      "patterns": [
+        "choro de cólica",
+        "cólica do bebê",
+        "bebê com cólica"
+      ],
+      "response": "Choro de cólica aparece geralmente no fim da tarde e à noite, com pernas encolhidas e barriga dura. Tente massagem e posição de 'aviãozinho'."
+    },
+    {
+      "patterns": [
+        "técnica 5 S",
+        "técnica dos 5 S",
+        "5 S do bebê",
+        "como acalmar bebê chorando",
+        "método para parar choro",
+        "5 S do Harvey Karp",
+        "como usar os 5 S"
+      ],
+      "response": "A técnica dos 5 S's ajuda a acalmar o bebê: 1. Swaddle (Enrolar firmemente), 2. Side/Stomach (De lado ou de bruços no colo), 3. Shush (Ruído branco forte), 4. Swing (Balançar ritmado), 5. Suck (Sucção - peito ou chupeta). Combine os primeiros 3 para melhores resultados."
+    }
+  ],
+  "keywords": [
+    "choro",
+    "chorando",
+    "chorar",
+    "choramingar",
+    "inconsolável",
+    "desesperado",
+    "lágrimas",
+    "grita",
+    "esperneia",
+    "cólica",
+    "5 S"
+  ]
+},
+    {
+  "tag": "gases",
+  "intents": [
+    {
+      "patterns": [
+        "bebe com colica",
+        "bebê com cólica",
+        "meu bebê tem cólica",
+        "cólica do bebê",
+        "bebê está com cólica"
+      ],
+      "response": "Gases e cólicas são muito comuns nos primeiros meses. Massagem abdominal, movimentos de bicicleta e arrotar bem após as mamadas ajudam bastante."
+    },
+    {
+      "patterns": [
+        "barriga dura bebe",
+        "barriga dura do bebê",
+        "bebê com barriga inchada",
+        "barriga do bebê está dura",
+        "bebê com barriga estufada"
+      ],
+      "response": "Barriga dura e inchada geralmente indica gases ou cólica. Faça massagem no sentido horário e posicione o bebê de bruços ou em posição de 'aviãozinho'."
+    },
+    {
+      "patterns": [
+        "como aliviar gases",
+        "como tirar gases do bebê",
+        "como fazer o bebê soltar gases",
+        "aliviar gases do bebê",
+        "bebê está com gases"
+      ],
+      "response": "Massagem abdominal e movimentos de bicicleta ajudam muito. Arrotar bem após mamar reduz gases. Posição de 'aviãozinho' e compressa morna na barriga também são eficazes."
+    },
+    {
+      "patterns": [
+        "gases no bebê",
+        "bebê soltando muitos gases",
+        "bebê com flatulência",
+        "como reduzir gases do bebê"
+      ],
+      "response": "Gases são comuns nos primeiros meses. Além da massagem, experimente amamentar em posição semi-vertical e evitar que o bebê engula muito ar durante a mamada."
+    }
+  ],
+  "keywords": ["gases", "colica", "cólica", "barriga", "inchada", "flatulência"]
+},
+{
+  "tag": "chas_calmantes",
+  "intents": [
+    {
+      "patterns": [
+        "chá para cólica do bebê",
+        "chá para gases do bebê",
+        "melhor chá para cólica",
+        "chá natural para cólica",
+        "chá de funcho para bebê",
+        "chá de camomila para bebê"
+      ],
+      "response": "IMPORTANTE: Nunca ofereça chá para bebês menores de 6 meses sem orientação médica. Os mais citados são camomila e funcho (erva-doce), mas consulte sempre o pediatra antes de usar."
+    },
+    {
+      "patterns": [
+        "posso dar chá para bebê",
+        "bebê pode tomar chá",
+        "a partir de quantos meses dar chá",
+        "chá para recém-nascido"
+      ],
+      "response": "A OMS recomenda EXCLUSIVAMENTE leite materno ou fórmula até os 6 meses. Chás só devem ser introduzidos após essa idade e sempre com liberação do pediatra. Bebês muito pequenos podem ter risco de intoxicação ou alergia."
+    },
+    {
+      "patterns": [
+        "chá para mãe que amamenta",
+        "chá para aumentar leite",
+        "chás que ajudam na produção de leite",
+        "chá para lactante"
+      ],
+      "response": "Alguns chás como fenugrego, erva-doce e cominho podem ajudar na produção de leite. Porém, mesmo a mãe deve consultar um médico ou nutricionista antes de consumir regularmente, pois algumas ervas podem causar efeitos colaterais."
+    },
+    {
+      "patterns": [
+        "chá calmante para bebê",
+        "chá para acalmar o bebê",
+        "chá para bebê dormir melhor",
+        "chá de camomila para recém-nascido"
+      ],
+      "response": "Camomila e erva-doce são os mais utilizados como calmantes. Para bebês abaixo de 6 meses, a mãe pode tomar o chá e passar indiretamente pelo leite. Nunca ofereça diretamente sem orientação pediátrica."
+    },
+    {
+      "patterns": [
+        "como preparar chá para bebê",
+        "receita de chá para cólica",
+        "proporção chá para bebê"
+      ],
+      "response": "Use sempre ervas de qualidade e prepare fraco (1 colher de chá rasa para 200ml de água). Deixe infusionar no máximo 5 minutos. Mesmo assim, só ofereça após os 6 meses e com aprovação do pediatra."
+    },
+    {
+      "patterns": [
+        "chá de funcho para bebê",
+        "erva-doce para cólica",
+        "anis estrelado para gases"
+      ],
+      "response": "O funcho (erva-doce) é popular para gases, mas deve ser usado com cautela. Consulte o pediatra antes de oferecer ao bebê. Excesso pode causar efeitos indesejados."
+    },
+    {
+      "patterns": [
+        "chás proibidos para bebê",
+        "quais chás não posso dar",
+        "chá de boldo para bebê",
+        "risco de chá para recém-nascido"
+      ],
+      "response": "⚠️ ATENÇÃO: Evite completamente chás de boldo, alecrim, arruda, erva-cidreira em excesso, hortelã-pimenta e qualquer chá com cafeína. Muitas ervas podem ser tóxicas para bebês ou reduzir a produção de leite."
+    }
+  ],
+  "keywords": ["chá", "cha", "camomila", "funcho", "erva-doce", "cólica", "gases", "calmante", "lactante"]
+}
+  ]
+}
