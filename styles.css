@@ -185,7 +185,7 @@
         #loader {
             position: fixed; 
             inset: 0; 
-            background: #fdfdfd url("imagens/fundo09.png") center; 
+            background: #fdfdfd url("fundo09.png") center; 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
@@ -221,7 +221,7 @@
         .footer-logo { 
             width: 45px; 
             height: 45px; 
-            background: url('imagens/logo_acalantobebe1.png') center/contain no-repeat; 
+            background: url('logo_acalantobebe1.png') center/contain no-repeat; 
             margin: 18px auto 0; 
             opacity: 0.5; 
             filter: grayscale(100%); 
