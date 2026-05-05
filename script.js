@@ -270,59 +270,27 @@ function entrarFullscreen() {
     let charts = {};
 
     // ==========================
-    // 🧠 CHAT ÁUREA - FALLBACK EMBUTIDO
-    // ==========================
-    let baseFAQ = null;
-    let historicoChat = [];
-    
+// 🧠 CHAT ÁUREA - LÓGICA CORRIGIDA
+// ==========================
+let baseFAQ = null;
 
-    const FALLBACK_FAQ = {
-        intents: [
-            {
-                name: "sono",
-                keywords: ["sono", "dormir", "acordar", "rotina sono", "noite"],
-                patterns: ["como melhorar o sono", "bebê não dorme", "horário de dormir"],
-                responses: ["😴 Tente criar uma rotina relaxante antes do sono: banho morno, luz baixa e uma música calma.", "💤 O ideal para a idade do Gabriel é de 14 a 17h de sono por dia."]
-            },
-            {
-                name: "amamentacao",
-                keywords: ["amamentar", "mamar", "peito", "leite", "mamada"],
-                patterns: ["quanto tempo mamar", "bebê não quer mamar", "intervalo amamentação"],
-                responses: ["🍼 Ofereça o peito sempre que ele demonstrar fome. Em média, a cada 2-3 horas.", "👶 A amamentação em livre demanda é a mais indicada."]
-            },
-            {
-                name: "choro",
-                keywords: ["choro", "chorar", "chora", "chorando", "desconforto"],
-                patterns: ["bebê chora muito", "como acalmar", "cólica"],
-                responses: ["💛 Verifique fome, fralda suja ou cansaço. Uma massagem suave na barriga ajuda.", "🎶 Tente um barulho branco ou contato pele a pele."]
-            },
-            {
-                name: "fralda",
-                keywords: ["fralda", "trocar", "xixi", "cocô"],
-                patterns: ["quantas fraldas", "trocar fralda quantas vezes"],
-                responses: ["🧷 Em média, 6 a 8 fraldas por dia é saudável.", "🚼 Fraldas muito secas por várias horas merecem atenção."]
-            },
-            {
-                name: "saude",
-                keywords: ["febre", "vômito", "diarreia", "remédio", "medicação"],
-                patterns: ["bebê está doente", "temperatura alta", "o que fazer"],
-                responses: ["⚠️ Febre acima de 38°C em bebês pequenos merece atendimento médico.", "💊 Não medique por conta própria. Consulte o pediatra."]
-            }
-        ]
-    };
-
-    async function carregarFAQ() {
+async function carregarFAQ() {
     try {
         const res = await fetch('aurea_faq.json');
         if (res.ok) {
             baseFAQ = await res.json();
-            console.log("✅ FAQ carregado do arquivo externo.");
-        } else throw new Error();
+            console.log("✅ FAQ carregado com sucesso.");
+        } else {
+            throw new Error();
+        }
     } catch (e) {
         console.warn("⚠️ Usando FAQ interno (fallback).");
         baseFAQ = FALLBACK_FAQ;
     }
 }
+
+// Inicializa o FAQ ao carregar
+carregarFAQ();
 
 function normalizarTexto(texto) {
     return texto.toLowerCase()
@@ -336,13 +304,12 @@ function similaridade(a, b) {
     let score = 0;
     wordsA.forEach(w => {
         if (wordsB.includes(w)) score += 2;
-        else if (wordsB.some(bw => bw.includes(w) || w.includes(bw))) score += 0.5;
     });
     return score / (wordsB.length || 1);
 }
 
-  function responderAurea(pergunta) {
-    if (!baseFAQ?.intents) return null;
+function responderPeloFAQ(pergunta) {
+    if (!baseFAQ || !baseFAQ.intents) return null;
 
     const texto = normalizarTexto(pergunta);
     let melhorResposta = null;
@@ -350,21 +317,11 @@ function similaridade(a, b) {
 
     baseFAQ.intents.forEach(intent => {
         let score = 0;
-
-        // Keywords
         if (intent.keywords) {
             intent.keywords.forEach(k => {
                 if (texto.includes(normalizarTexto(k))) score += 4;
             });
         }
-
-        // Patterns
-        if (intent.patterns) {
-            intent.patterns.forEach(p => {
-                score += similaridade(texto, normalizarTexto(p)) * 6;
-            });
-        }
-
         if (score > melhorScore) {
             melhorScore = score;
             const respostas = intent.responses || [intent.response];
@@ -372,84 +329,29 @@ function similaridade(a, b) {
         }
     });
 
-    // Limiar de confiança
-    return (melhorResposta && melhorScore >= 2.5) ? melhorResposta : null;
+    return (melhorScore >= 2.5) ? melhorResposta : null;
 }
+
 async function consultarIAGenerativa(pergunta) {
-    if (!resposta) {
-    resposta = await consultarIAGenerativa(texto);
+    const URL_IA = "https://script.google.com/macros/s/AKfycbxUkhYoPvBOYR-Sguj23SzWizhZb3mpKKMVgnkg0RUWNZ8D9Jm2W-UO-XgjpP-pgoQ/exec";
 
-    if (!resposta) {
-        resposta = "Ainda estou aprendendo 💛 Pode tentar reformular a pergunta?";
-    }
-}
-    const URL = "https://script.google.com/macros/s/AKfycbxUkhYoPvBOYR-Sguj23SzWizhZb3mpKKMVgnkg0RUWNZ8D9Jm2W-UO-XgjpP-pgoQ/exec";
-
-    const promptSistema = `Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. 
-Responda de forma curta (máximo 3-4 frases), gentil, calorosa e use emojis discretos. 
-Nunca dê diagnósticos médicos. Sempre sugira consultar o pediatra se for algo preocupante.`;
+    const promptSistema = `Você é a Áurea, uma assistente virtual acolhedora e especialista em maternidade. Responda de forma curta (máximo 3 frases) e gentil. Nunca dê diagnósticos médicos.`;
 
     try {
-        const response = await fetch(URL, {
+        const response = await fetch(URL_IA, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
             body: JSON.stringify({
                 prompt: `${promptSistema}\n\nPergunta da mãe: ${pergunta}`
             })
         });
 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
         const data = await response.json();
-
-        // 🔍 tratamento seguro da resposta Gemini
-        const resposta = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-        return resposta || "Não consegui responder agora 😢 Tente novamente em instantes.";
-
+        // Ajuste o caminho abaixo conforme o retorno do seu Google Apps Script
+        return data.resposta || data.candidates?.[0]?.content?.parts?.[0]?.text || null;
     } catch (error) {
-        console.error("Erro IA:", error);
-        return "Estou com instabilidade no momento 💛 Tente novamente em alguns segundos.";
+        console.error("Erro na chamada da IA:", error);
+        return null;
     }
-}
-
-    function toggleChat() {
-    const c = document.getElementById("chatWindow");
-    c.style.display = c.style.display === "flex" ? "none" : "flex";
-}
-
-function createTypingIndicator() {
-    const indicator = document.createElement("div");
-    indicator.className = "msg aurea thinking";
-    indicator.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
-    return indicator;
-}
-
-function removeTypingIndicator() {
-    document.querySelectorAll('.msg.thinking').forEach(el => el.remove());
-}
-
-async function typeWriter(element, text, speed = 22) {
-    element.innerHTML = "";
-    for (let char of text) {
-        element.innerHTML += char;
-        await new Promise(r => setTimeout(r, speed));
-    }
-}
-
-function appendMsg(texto, sender) {
-    const chatBody = document.getElementById("chatBody");
-    const msgDiv = document.createElement("div");
-    msgDiv.className = `msg ${sender}`;
-    
-    if (sender === "aurea") msgDiv.innerHTML = texto;
-    else msgDiv.textContent = texto;
-    
-    chatBody.appendChild(msgDiv);
-    chatBody.scrollTop = chatBody.scrollHeight;
-    return msgDiv;
 }
 
 async function sendMessage() {
@@ -457,32 +359,45 @@ async function sendMessage() {
     const texto = input.value.trim();
     if (!texto) return;
 
+    // 1. Mostrar mensagem do usuário
     appendMsg(texto, "user");
     input.value = "";
 
-    const chatBody = document.getElementById("chatBody");
-    const thinking = createTypingIndicator();
-    chatBody.appendChild(thinking);
-    chatBody.scrollTop = chatBody.scrollHeight;
+    // 2. Mostrar indicador de digitando
+    const loadingMsg = createTypingIndicator();
+    document.getElementById("chatBody").appendChild(loadingMsg);
 
-    // 1. Busca no JSON primeiro
-    let resposta = responderAurea(texto);
-
-    // 2. Se não encontrou → Gemini
+    // 3. Tentar FAQ primeiro, depois IA
+    let resposta = responderPeloFAQ(texto);
+    
     if (!resposta) {
         resposta = await consultarIAGenerativa(texto);
-    } else {
-        await new Promise(r => setTimeout(r, 700)); // delay natural
     }
 
+    if (!resposta) {
+        resposta = "Ainda estou aprendendo sobre isso 💛 Pode tentar reformular ou falar com o pediatra?";
+    }
+
+    // 4. Remover indicador e mostrar resposta
     removeTypingIndicator();
+    const msgDiv = appendMsg("", "aurea");
+    await typeWriter(msgDiv, resposta);
+}
 
-    const msgElement = document.createElement("div");
-    msgElement.className = "msg aurea";
-    chatBody.appendChild(msgElement);
+// Funções de UI Auxiliares
+function appendMsg(texto, sender) {
+    const chatBody = document.getElementById("chatBody");
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `msg ${sender}`;
+    msgDiv.textContent = texto;
+    chatBody.appendChild(msgDiv);
     chatBody.scrollTop = chatBody.scrollHeight;
+    return msgDiv;
+}
 
-    await typeWriter(msgElement, resposta);
+function removeTypingIndicator() {
+    const indicators = document.querySelectorAll('.thinking');
+    indicators.forEach(el => el.remove());
 }
     // ==========================
     // 📊 DADOS E GRÁFICOS
