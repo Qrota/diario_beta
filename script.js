@@ -346,29 +346,25 @@ function entrarFullscreen() {
 }
 
     function responderAurea(pergunta) {
-    if (!baseFAQ || !baseFAQ.intents) {
-        return "🔄 Estou carregando...";
-    }
+    if (!baseFAQ || !baseFAQ.intents) return null;
 
     const texto = normalizarTexto(pergunta);
     let melhorResposta = null;
     let melhorScore = 0;
-    let melhorItem = null;
 
     baseFAQ.intents.forEach(categoria => {
         if (!categoria.intents) return;
 
         categoria.intents.forEach(item => {
             let score = 0;
-
             item.patterns.forEach(p => {
                 score += similaridade(texto, normalizarTexto(p)) * 5;
             });
 
             if (categoria.keywords) {
-            categoria.keywords.forEach(k => {
-            if (texto.includes(k)) score += 3;
-    });
+                categoria.keywords.forEach(k => {
+                    if (texto.includes(normalizarTexto(k))) score += 3;
+                });
             }
 
             if (score > melhorScore) {
@@ -379,25 +375,36 @@ function entrarFullscreen() {
         });
     });
 
+    // Se a confiança for baixa, retornamos null para ativar o Gemini
     if (!melhorResposta || melhorScore < 1.5) {
-        ultimoIntent = item;
-
-    // usa contexto anterior
-    if (ultimoIntent) {
-        const respostas = ultimoIntent.responses || [ultimoIntent.response];
-        return respostas[Math.floor(Math.random() * respostas.length)];
+        return null;
     }
 
-    const fallback = [
-        "Não entendi muito bem 🤔 Pode me explicar melhor?",
-        "Me conta com mais detalhes para eu te ajudar 💛",
-        "Pode reformular a pergunta? Quero te ajudar da melhor forma 😊"
-    ];
-
-    return fallback[Math.floor(Math.random() * fallback.length)];
-}
-
     return melhorResposta;
+}
+async function consultarIAGenerativa(pergunta) {
+    const API_KEY = "AIzaSyD-j-O3MLOtkUSF2fp_LTMpf1kiUKSQoAk"; // Substitua pela sua chave
+    const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+    const promptSistema = "Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. Responda de forma curta (máximo 3 frases), gentil e use emojis discretos. Nunca dê diagnósticos médicos, sempre sugira consultar o pediatra se for algo grave.";
+
+    try {
+        const response = await fetch(URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ 
+                    parts: [{ text: `${promptSistema}\nPergunta da mãe: ${pergunta}` }] 
+                }]
+            })
+        });
+
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text;
+    } catch (error) {
+        console.error("Erro na API Gemini:", error);
+        return "Puxa, tive um probleminha técnico aqui. Pode perguntar de novo? 💛";
+    }
 }
 
     function toggleChat() {
@@ -456,28 +463,32 @@ async function sendMessage() {
     appendMsg(texto, "user");
     input.value = "";
 
-    // 🧠 Mostra "Pensando..." animado
+    // 🧠 Mostra indicador de pensamento
+    const chatBody = document.getElementById("chatBody");
     const thinking = createTypingIndicator();
-    document.getElementById("chatBody").appendChild(thinking);
-    document.getElementById("chatBody").scrollTop = document.getElementById("chatBody").scrollHeight;
+    chatBody.appendChild(thinking);
+    chatBody.scrollTop = chatBody.scrollHeight;
 
-    // ⏱️ Delay realista (600ms a 1800ms)
-    const delay = Math.floor(Math.random() * 1200) + 600;
-    await new Promise(resolve => setTimeout(resolve, delay));
+    // 1. Tenta buscar no FAQ local
+    let resposta = responderAurea(texto);
+
+    // 2. Se não encontrou no FAQ, chama o Gemini[cite: 1]
+    if (resposta === null) {
+        resposta = await consultarIAGenerativa(texto);
+    } else {
+        // Se achou no local, apenas um delay curto para parecer natural
+        await new Promise(resolve => setTimeout(resolve, 800));
+    }
 
     // Remove indicador de pensamento
     removeTypingIndicator();
 
-    // Gera resposta
-    const resposta = responderAurea(texto);
-
-    // Cria elemento da resposta
+    // 📝 Cria elemento da resposta e aplica o efeito de digitação[cite: 1]
     const msgElement = document.createElement("div");
     msgElement.className = "msg aurea";
-    document.getElementById("chatBody").appendChild(msgElement);
-    document.getElementById("chatBody").scrollTop = document.getElementById("chatBody").scrollHeight;
+    chatBody.appendChild(msgElement);
+    chatBody.scrollTop = chatBody.scrollHeight;
 
-    // ⌨️ Efeito de digitação letra por letra
     await typeWriter(msgElement, resposta);
 }
     // ==========================
