@@ -312,123 +312,102 @@ function entrarFullscreen() {
     };
 
     async function carregarFAQ() {
-        try {
-            const res = await fetch('aurea_faq.json');
-            if (res.ok) {
-                baseFAQ = await res.json();
-                console.log("✅ FAQ carregado do arquivo externo.");
-            } else {
-                throw new Error("Arquivo não encontrado");
-            }
-        } catch (e) {
-            console.warn("⚠️ Usando FAQ interno (fallback).", e);
-            baseFAQ = FALLBACK_FAQ;
-        }
+    try {
+        const res = await fetch('aurea_faq.json');
+        if (res.ok) {
+            baseFAQ = await res.json();
+            console.log("✅ FAQ carregado do arquivo externo.");
+        } else throw new Error();
+    } catch (e) {
+        console.warn("⚠️ Usando FAQ interno (fallback).");
+        baseFAQ = FALLBACK_FAQ;
     }
+}
 
-    function normalizarTexto(texto) {
-        return texto.toLowerCase()
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-            .replace(/[^\w\s]/g, "");
-    }
+function normalizarTexto(texto) {
+    return texto.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\w\s]/g, "");
+}
 
-    function similaridade(a, b) {
-    const wordsA = a.split(" ");
-    const wordsB = b.split(" ");
-
+function similaridade(a, b) {
+    const wordsA = a.split(/\s+/).filter(Boolean);
+    const wordsB = b.split(/\s+/).filter(Boolean);
     let score = 0;
-
     wordsA.forEach(w => {
         if (wordsB.includes(w)) score += 2;
+        else if (wordsB.some(bw => bw.includes(w) || w.includes(bw))) score += 0.5;
     });
-
     return score / (wordsB.length || 1);
 }
 
-    function responderAurea(pergunta) {
-    if (!baseFAQ || !baseFAQ.intents) return null;
+  function responderAurea(pergunta) {
+    if (!baseFAQ?.intents) return null;
 
     const texto = normalizarTexto(pergunta);
     let melhorResposta = null;
     let melhorScore = 0;
 
-    baseFAQ.intents.forEach(categoria => {
-        if (!categoria.intents) return;
+    baseFAQ.intents.forEach(intent => {
+        let score = 0;
 
-        categoria.intents.forEach(item => {
-            let score = 0;
-            item.patterns.forEach(p => {
-                score += similaridade(texto, normalizarTexto(p)) * 5;
+        // Keywords
+        if (intent.keywords) {
+            intent.keywords.forEach(k => {
+                if (texto.includes(normalizarTexto(k))) score += 4;
             });
+        }
 
-            if (categoria.keywords) {
-                categoria.keywords.forEach(k => {
-                    if (texto.includes(normalizarTexto(k))) score += 3;
-                });
-            }
+        // Patterns
+        if (intent.patterns) {
+            intent.patterns.forEach(p => {
+                score += similaridade(texto, normalizarTexto(p)) * 6;
+            });
+        }
 
-            if (score > melhorScore) {
-                melhorScore = score;
-                const respostas = item.responses || [item.response];
-                melhorResposta = respostas[Math.floor(Math.random() * respostas.length)];
-            }
-        });
+        if (score > melhorScore) {
+            melhorScore = score;
+            const respostas = intent.responses || [intent.response];
+            melhorResposta = respostas[Math.floor(Math.random() * respostas.length)];
+        }
     });
 
-    // Se a confiança for baixa, retornamos null para ativar o Gemini
-    if (!melhorResposta || melhorScore < 1.5) {
-        return null;
-    }
-
-    return melhorResposta;
+    // Limiar de confiança
+    return (melhorResposta && melhorScore >= 2.5) ? melhorResposta : null;
 }
 async function consultarIAGenerativa(pergunta) {
     const API_KEY = "AIzaSyD-j-O3MLOtkUSF2fp_LTMpf1kiUKSQoAk";
     const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-    const promptSistema = "Você é a Áurea, uma assistente virtual acolhedora e especialista em maternidade. Responda curto (máx 3 frases), com empatia e emojis leves.";
+    const promptSistema = `Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. 
+Responda de forma curta (máximo 3-4 frases), gentil, calorosa e use emojis discretos. 
+Nunca dê diagnósticos médicos. Sempre sugira consultar o pediatra se for algo preocupante.`;
 
     try {
         const response = await fetch(URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                contents: [
-                    {
-                        role: "user",
-                        parts: [
-                            { text: `${promptSistema}\nPergunta: ${pergunta}` }
-                        ]
-                    }
-                ],
+                contents: [{
+                    parts: [{ 
+                        text: `${promptSistema}\n\nPergunta da mãe: ${pergunta}` 
+                    }]
+                }],
                 generationConfig: {
                     temperature: 0.7,
-                    maxOutputTokens: 200
+                    maxOutputTokens: 300
                 }
             })
         });
 
-        if (!response.ok) {
-            const erro = await response.text();
-            console.error("Erro HTTP Gemini:", erro);
-            return "Erro ao acessar inteligência 😕";
-        }
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
         const data = await response.json();
-
-        const textoResposta =
-            data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-        if (!textoResposta) {
-            console.error("Resposta inválida:", data);
-            return "Não consegui responder agora 😕";
-        }
-
-        return textoResposta;
-
+        return data.candidates?.[0]?.content?.parts?.[0]?.text 
+            || "Desculpe, não consegui processar agora. Pode tentar de novo? 💛";
     } catch (error) {
-        console.error("Erro geral Gemini:", error);
-        return "Tive um probleminha técnico 💛";
+        console.error("Erro na API Gemini:", error);
+        return "Puxa, estou com uma dificuldade técnica no momento... Pode perguntar novamente em alguns segundos? 💛";
     }
 }
 
@@ -440,26 +419,19 @@ async function consultarIAGenerativa(pergunta) {
 function createTypingIndicator() {
     const indicator = document.createElement("div");
     indicator.className = "msg aurea thinking";
-    indicator.innerHTML = `
-        <div class="typing-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    `;
+    indicator.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
     return indicator;
 }
 
 function removeTypingIndicator() {
-    const indicator = document.querySelector('.msg.thinking');
-    if (indicator) indicator.remove();
+    document.querySelectorAll('.msg.thinking').forEach(el => el.remove());
 }
 
-async function typeWriter(element, text, speed = 25) {
+async function typeWriter(element, text, speed = 22) {
     element.innerHTML = "";
-    for (let i = 0; i < text.length; i++) {
-        element.innerHTML += text[i];
-        await new Promise(resolve => setTimeout(resolve, speed));
+    for (let char of text) {
+        element.innerHTML += char;
+        await new Promise(r => setTimeout(r, speed));
     }
 }
 
@@ -468,11 +440,8 @@ function appendMsg(texto, sender) {
     const msgDiv = document.createElement("div");
     msgDiv.className = `msg ${sender}`;
     
-    if (sender === "aurea") {
-        msgDiv.innerHTML = texto;
-    } else {
-        msgDiv.textContent = texto;
-    }
+    if (sender === "aurea") msgDiv.innerHTML = texto;
+    else msgDiv.textContent = texto;
     
     chatBody.appendChild(msgDiv);
     chatBody.scrollTop = chatBody.scrollHeight;
@@ -484,31 +453,26 @@ async function sendMessage() {
     const texto = input.value.trim();
     if (!texto) return;
 
-    // 💬 Usuário envia mensagem
     appendMsg(texto, "user");
     input.value = "";
 
-    // 🧠 Mostra indicador de pensamento
     const chatBody = document.getElementById("chatBody");
     const thinking = createTypingIndicator();
     chatBody.appendChild(thinking);
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    // 1. Tenta buscar no FAQ local
+    // 1. Busca no JSON primeiro
     let resposta = responderAurea(texto);
 
-    // 2. Se não encontrou no FAQ, chama o Gemini[cite: 1]
-    if (resposta === null) {
+    // 2. Se não encontrou → Gemini
+    if (!resposta) {
         resposta = await consultarIAGenerativa(texto);
     } else {
-        // Se achou no local, apenas um delay curto para parecer natural
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise(r => setTimeout(r, 700)); // delay natural
     }
 
-    // Remove indicador de pensamento
     removeTypingIndicator();
 
-    // 📝 Cria elemento da resposta e aplica o efeito de digitação[cite: 1]
     const msgElement = document.createElement("div");
     msgElement.className = "msg aurea";
     chatBody.appendChild(msgElement);
@@ -590,6 +554,7 @@ async function sendMessage() {
     const content = document.getElementById('app-content');
     
     try {
+        // Carrega frases personalizadas
         try {
             const resF = await fetch('frases.json');
             if (resF.ok) frasesIA = await resF.json();
