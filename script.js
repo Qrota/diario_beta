@@ -376,6 +376,13 @@ function similaridade(a, b) {
     return (melhorResposta && melhorScore >= 2.5) ? melhorResposta : null;
 }
 async function consultarIAGenerativa(pergunta) {
+    if (!resposta) {
+    resposta = await consultarIAGenerativa(texto);
+
+    if (!resposta) {
+        resposta = "Ainda estou aprendendo 💛 Pode tentar reformular a pergunta?";
+    }
+}
     const URL = "https://script.google.com/macros/s/AKfycbxUkhYoPvBOYR-Sguj23SzWizhZb3mpKKMVgnkg0RUWNZ8D9Jm2W-UO-XgjpP-pgoQ/exec";
 
     const promptSistema = `Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. 
