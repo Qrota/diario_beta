@@ -376,8 +376,7 @@ function similaridade(a, b) {
     return (melhorResposta && melhorScore >= 2.5) ? melhorResposta : null;
 }
 async function consultarIAGenerativa(pergunta) {
-    const API_KEY = "AIzaSyD-j-O3MLOtkUSF2fp_LTMpf1kiUKSQoAk";
-    const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    const URL = "https://script.google.com/macros/s/AKfycbxUkhYoPvBOYR-Sguj23SzWizhZb3mpKKMVgnkg0RUWNZ8D9Jm2W-UO-XgjpP-pgoQ/exec";
 
     const promptSistema = `Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. 
 Responda de forma curta (máximo 3-4 frases), gentil, calorosa e use emojis discretos. 
@@ -386,28 +385,26 @@ Nunca dê diagnósticos médicos. Sempre sugira consultar o pediatra se for algo
     try {
         const response = await fetch(URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({
-                contents: [{
-                    parts: [{ 
-                        text: `${promptSistema}\n\nPergunta da mãe: ${pergunta}` 
-                    }]
-                }],
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 300
-                }
+                prompt: `${promptSistema}\n\nPergunta da mãe: ${pergunta}`
             })
         });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
         const data = await response.json();
-        return data.candidates?.[0]?.content?.parts?.[0]?.text 
-            || "Desculpe, não consegui processar agora. Pode tentar de novo? 💛";
+
+        // 🔍 tratamento seguro da resposta Gemini
+        const resposta = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        return resposta || "Não consegui responder agora 😢 Tente novamente em instantes.";
+
     } catch (error) {
-        console.error("Erro na API Gemini:", error);
-        return "Puxa, estou com uma dificuldade técnica no momento... Pode perguntar novamente em alguns segundos? 💛";
+        console.error("Erro IA:", error);
+        return "Estou com instabilidade no momento 💛 Tente novamente em alguns segundos.";
     }
 }
 
