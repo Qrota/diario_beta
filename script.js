@@ -383,27 +383,52 @@ function entrarFullscreen() {
     return melhorResposta;
 }
 async function consultarIAGenerativa(pergunta) {
-    const API_KEY = "AIzaSyD-j-O3MLOtkUSF2fp_LTMpf1kiUKSQoAk"; // Substitua pela sua chave
+    const API_KEY = "SUA_KEY";
     const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-    const promptSistema = "Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. Responda de forma curta (máximo 3 frases), gentil e use emojis discretos. Nunca dê diagnósticos médicos, sempre sugira consultar o pediatra se for algo grave.";
+    const promptSistema = "Você é a Áurea, uma assistente virtual acolhedora e especialista em maternidade. Responda curto (máx 3 frases), com empatia e emojis leves.";
 
     try {
         const response = await fetch(URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                contents: [{ 
-                    parts: [{ text: `${promptSistema}\nPergunta da mãe: ${pergunta}` }] 
-                }]
+                contents: [
+                    {
+                        role: "user",
+                        parts: [
+                            { text: `${promptSistema}\nPergunta: ${pergunta}` }
+                        ]
+                    }
+                ],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 200
+                }
             })
         });
 
+        if (!response.ok) {
+            const erro = await response.text();
+            console.error("Erro HTTP Gemini:", erro);
+            return "Erro ao acessar inteligência 😕";
+        }
+
         const data = await response.json();
-        return data.candidates[0].content.parts[0].text;
+
+        const textoResposta =
+            data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!textoResposta) {
+            console.error("Resposta inválida:", data);
+            return "Não consegui responder agora 😕";
+        }
+
+        return textoResposta;
+
     } catch (error) {
-        console.error("Erro na API Gemini:", error);
-        return "Puxa, tive um probleminha técnico aqui. Pode perguntar de novo? 💛";
+        console.error("Erro geral Gemini:", error);
+        return "Tive um probleminha técnico 💛";
     }
 }
 
