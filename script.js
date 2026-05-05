@@ -383,7 +383,7 @@ function entrarFullscreen() {
     return melhorResposta;
 }
 async function consultarIAGenerativa(pergunta) {
-    const API_KEY = "SUA_KEY";
+    const API_KEY = "AIzaSyD-j-O3MLOtkUSF2fp_LTMpf1kiUKSQoAk";
     const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
     const promptSistema = "Você é a Áurea, uma assistente virtual acolhedora e especialista em maternidade. Responda curto (máx 3 frases), com empatia e emojis leves.";
