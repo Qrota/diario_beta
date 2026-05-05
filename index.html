@@ -5,13 +5,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#fdfdfd">
-    <link rel="icon" href="logo_acalantobebe1.png" type="image/x-icon">
+    <link rel="icon" href="imagens/logo_acalantobebe1.png" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Assistente Inteligente | Diário do Gabriel</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet"href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -19,16 +19,25 @@
 
 <div class="chat-window" id="chatWindow">
     <div class="chat-header">
-        <strong>ÁUREA 💬</strong>
-        <span onclick="toggleChat()" style="cursor:pointer;">✕</span>
+        <div class="header-content">
+            
+            <div>
+                <strong>Áurea</strong>
+                <small> # Seu colo digital</small>
+            </div>
+        </div>
+        <span onclick="toggleChat()" style="cursor:pointer; font-size: 20px;">✕</span>
     </div>
     <div class="chat-body" id="chatBody">
-        <div class="msg aurea">Olá 💛 Sou a ÁUREA. Posso te ajudar com sono, alimentação e rotina do bebê.</div>
+        <div class="msg aurea">Oi! Que bom te ver aqui ❤️</div>
     </div>
     <div class="chat-input">
         <input type="text" id="userInput" placeholder="Digite sua pergunta..." onkeydown="handleChatKey(event)">
         <button onclick="sendMessage()">➤</button>
     </div>
+</div>
+<div id="typingIndicator" class="msg aurea typing" style="display:none;">
+    <span></span><span></span><span></span>
 </div>
 
 <div id="loader" class="loading-screen">
@@ -124,6 +133,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <script src="script.js"></script>
-
 </body>
 </html>
