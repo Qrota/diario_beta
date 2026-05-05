@@ -274,6 +274,7 @@ function entrarFullscreen() {
     // ==========================
     let baseFAQ = null;
     let historicoChat = [];
+    
 
     const FALLBACK_FAQ = {
         intents: [
@@ -332,12 +333,17 @@ function entrarFullscreen() {
     }
 
     function similaridade(a, b) {
-        const setA = new Set(a.split(" "));
-        const setB = new Set(b.split(" "));
-        const inter = new Set([...setA].filter(x => setB.has(x)));
-        const uni = new Set([...setA, ...setB]);
-        return inter.size / (uni.size || 1);
-    }
+    const wordsA = a.split(" ");
+    const wordsB = b.split(" ");
+
+    let score = 0;
+
+    wordsA.forEach(w => {
+        if (wordsB.includes(w)) score += 2;
+    });
+
+    return score / (wordsB.length || 1);
+}
 
     function responderAurea(pergunta) {
     if (!baseFAQ || !baseFAQ.intents) {
@@ -347,6 +353,7 @@ function entrarFullscreen() {
     const texto = normalizarTexto(pergunta);
     let melhorResposta = null;
     let melhorScore = 0;
+    let melhorItem = null;
 
     baseFAQ.intents.forEach(categoria => {
         if (!categoria.intents) return;
@@ -359,36 +366,120 @@ function entrarFullscreen() {
             });
 
             if (categoria.keywords) {
-                categoria.keywords.forEach(k => {
-                    if (texto.includes(k)) score += 1.5;
-                });
+            categoria.keywords.forEach(k => {
+            if (texto.includes(k)) score += 3;
+    });
             }
 
             if (score > melhorScore) {
                 melhorScore = score;
-                melhorResposta = item.response;
+                const respostas = item.responses || [item.response];
+                melhorResposta = respostas[Math.floor(Math.random() * respostas.length)];
             }
         });
     });
 
-    if (!melhorResposta || melhorScore < 1) {
-        return "💬 Ainda estou aprendendo! Pergunte sobre sono, amamentação, choro ou saúde.";
+    if (!melhorResposta || melhorScore < 1.5) {
+        ultimoIntent = item;
+
+    // usa contexto anterior
+    if (ultimoIntent) {
+        const respostas = ultimoIntent.responses || [ultimoIntent.response];
+        return respostas[Math.floor(Math.random() * respostas.length)];
     }
+
+    const fallback = [
+        "Não entendi muito bem 🤔 Pode me explicar melhor?",
+        "Me conta com mais detalhes para eu te ajudar 💛",
+        "Pode reformular a pergunta? Quero te ajudar da melhor forma 😊"
+    ];
+
+    return fallback[Math.floor(Math.random() * fallback.length)];
+}
 
     return melhorResposta;
 }
 
-    function toggleChat() { const c = document.getElementById("chatWindow"); c.style.display = c.style.display === "flex" ? "none" : "flex"; }
-    function sendMessage() {
-        const i = document.getElementById("userInput"), t = i.value.trim();
-        if (!t) return; appendMsg(t, "user"); i.value = "";
-        setTimeout(() => { appendMsg(responderAurea(t), "aurea"); }, 500);
-    }
-    function appendMsg(t, s) {
-        const b = document.getElementById("chatBody"), d = document.createElement("div");
-        d.className = `msg ${s}`; d.innerHTML = t; b.appendChild(d); b.scrollTop = b.scrollHeight;
-    }
+    function toggleChat() {
+    const c = document.getElementById("chatWindow");
+    c.style.display = c.style.display === "flex" ? "none" : "flex";
+}
 
+function createTypingIndicator() {
+    const indicator = document.createElement("div");
+    indicator.className = "msg aurea thinking";
+    indicator.innerHTML = `
+        <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    `;
+    return indicator;
+}
+
+function removeTypingIndicator() {
+    const indicator = document.querySelector('.msg.thinking');
+    if (indicator) indicator.remove();
+}
+
+async function typeWriter(element, text, speed = 25) {
+    element.innerHTML = "";
+    for (let i = 0; i < text.length; i++) {
+        element.innerHTML += text[i];
+        await new Promise(resolve => setTimeout(resolve, speed));
+    }
+}
+
+function appendMsg(texto, sender) {
+    const chatBody = document.getElementById("chatBody");
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `msg ${sender}`;
+    
+    if (sender === "aurea") {
+        msgDiv.innerHTML = texto;
+    } else {
+        msgDiv.textContent = texto;
+    }
+    
+    chatBody.appendChild(msgDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    return msgDiv;
+}
+
+async function sendMessage() {
+    const input = document.getElementById("userInput");
+    const texto = input.value.trim();
+    if (!texto) return;
+
+    // 💬 Usuário envia mensagem
+    appendMsg(texto, "user");
+    input.value = "";
+
+    // 🧠 Mostra "Pensando..." animado
+    const thinking = createTypingIndicator();
+    document.getElementById("chatBody").appendChild(thinking);
+    document.getElementById("chatBody").scrollTop = document.getElementById("chatBody").scrollHeight;
+
+    // ⏱️ Delay realista (600ms a 1800ms)
+    const delay = Math.floor(Math.random() * 1200) + 600;
+    await new Promise(resolve => setTimeout(resolve, delay));
+
+    // Remove indicador de pensamento
+    removeTypingIndicator();
+
+    // Gera resposta
+    const resposta = responderAurea(texto);
+
+    // Cria elemento da resposta
+    const msgElement = document.createElement("div");
+    msgElement.className = "msg aurea";
+    document.getElementById("chatBody").appendChild(msgElement);
+    document.getElementById("chatBody").scrollTop = document.getElementById("chatBody").scrollHeight;
+
+    // ⌨️ Efeito de digitação letra por letra
+    await typeWriter(msgElement, resposta);
+}
     // ==========================
     // 📊 DADOS E GRÁFICOS
     // ==========================
@@ -459,27 +550,40 @@ function entrarFullscreen() {
         document.getElementById("relatorioIA").innerHTML = insights.join("");
     }
     async function init() {
-        const loader = document.getElementById('loader'), content = document.getElementById('app-content');
+    const loader = document.getElementById('loader');
+    const content = document.getElementById('app-content');
+    
+    try {
         try {
-            // Carrega frases apenas se o arquivo existir, senão usa o padrão
-            try {
-                const resF = await fetch('frases.json');
-                if (resF.ok) frasesIA = await resF.json();
-            } catch(e) { console.warn("Usando frases padrão."); }
-
-            const resD = await fetch(API);
-            if (!resD.ok) throw new Error();
-            dadosOriginais = await resD.json();
-            
-            loader.style.opacity = '0';
-            setTimeout(() => { loader.style.visibility = 'hidden'; content.style.visibility = 'visible'; content.style.opacity = '1'; }, 600);
-            
-            popularFiltro(dadosOriginais);
-            processar(dadosOriginais);
-        } catch (e) {
-            document.getElementById("relatorioIA").innerHTML = "❌ Erro ao carregar dados da planilha.";
-            loader.style.display = 'none'; content.style.visibility = 'visible'; content.style.opacity = '1';
+            const resF = await fetch('frases.json');
+            if (resF.ok) frasesIA = await resF.json();
+        } catch(e) { 
+            console.warn("Usando frases padrão."); 
         }
-    }
 
-    (async function() { await carregarFAQ(); init(); })();
+        const resD = await fetch(API);
+        if (!resD.ok) throw new Error();
+        dadosOriginais = await resD.json();
+        
+        loader.style.opacity = '0';
+        setTimeout(() => { 
+            loader.style.visibility = 'hidden'; 
+            content.style.visibility = 'visible'; 
+            content.style.opacity = '1'; 
+        }, 600);
+        
+        popularFiltro(dadosOriginais);
+        processar(dadosOriginais);
+    } catch (e) {
+        document.getElementById("relatorioIA").innerHTML = "❌ Erro ao carregar dados da planilha.";
+        loader.style.display = 'none';
+        content.style.visibility = 'visible';
+        content.style.opacity = '1';
+    }
+}
+
+// Inicialização
+(async function() {
+    await carregarFAQ();
+    init();
+})();
