@@ -408,25 +408,40 @@ function entrarFullscreen() {
         return melhorResposta;
     }
 async function consultarIAGenerativa(pergunta) {
-    const URL= "https://script.google.com/macros/s/AKfycbwfBo8injePRAJ5STsinJryWYKcZZ8HzrWTulwq61DYlD5KIXHc0Y_U_zHVD5R4VUo/exec";
-    
-    try {
+  // 💡 DICA: Verifique se este é o link da sua ÚLTIMA "Nova Implantação"
+  const URL = "https://script.google.com/macros/s/AKfycbwx0fRyycwv3LHo8cQWIVhQn9g9wf_XBsYq1iQuOxaJNG5SbYge3m0JyxgK34nJnaI/exec";
+  
+  try {
     const res = await fetch(URL, {
       method: "POST",
+      // 🟢 MUDANÇA CRUCIAL: text/plain evita o "Preflight OPTIONS" que causa o erro de CORS
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "text/plain;charset=utf-8"
       },
-      body: JSON.stringify({ pergunta })
+      // 🟢 AJUSTE: Enviando 'contents' para bater com o seu doPost que usa body.contents
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: pergunta }]
+          }
+        ]
+      })
     });
 
+    // O Apps Script redireciona a requisição, o fetch lida com isso automaticamente
     const data = await res.json();
 
-    if (data.ok) return data.text;
+    // No seu Apps Script você definiu o retorno como { ok: true, text: ... }
+    if (data && data.ok) {
+      return data.text;
+    }
 
+    console.error("Resposta da API sem sucesso:", data);
     return "Erro ao responder 💛";
 
   } catch (e) {
-    console.error(e);
+    console.error("Falha na comunicação com a Áurea:", e);
     return "Erro de conexão 💛";
   }
 }
