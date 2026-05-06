@@ -408,7 +408,7 @@ function entrarFullscreen() {
         return melhorResposta;
     }
 async function consultarIAGenerativa(pergunta) {
-    const URL_IA = "https://script.google.com/macros/s/AKfycbxUkhYoPvBOYR-Sguj23SzWizhZb3mpKKMVgnkg0RUWNZ8D9Jm2W-UO-XgjpP-pgoQ/exec";
+    const URL_IA = "https://script.google.com/macros/s/AKfycbxJ0OfaD9hfIpkUj1sj_uqrhlyagaRKGskBRWh41FpxRB9Tvl_s-KfQL8YRksNaatE/exec";
    
     const promptSistema = "Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. Responda de forma curta (máximo 3 frases), gentil e use emojis discretos. Nunca dê diagnósticos médicos, sempre sugira consultar o pediatra se for algo grave.";
 
