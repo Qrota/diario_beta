@@ -20,24 +20,25 @@
 <div class="chat-window" id="chatWindow">
     <div class="chat-header">
         <div class="header-content">
-            
             <div>
-                <strong>Áurea</strong>
-                <small> # Seu colo digital</small>
+                <strong>ÁUREA</strong>
+                <small> # SEU COLO DIGITAL</small>
             </div>
         </div>
-        <span onclick="toggleChat()" style="cursor:pointer; font-size: 20px;">✕</span>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <span onclick="limparChat()" title="Limpar conversa" style="cursor:pointer; font-size: 16px; opacity: 0.8;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">🗑️</span>
+            <span onclick="toggleChat()" style="cursor:pointer; font-size: 20px;">✕</span>
+        </div>
     </div>
+    
     <div class="chat-body" id="chatBody">
-        <div class="msg aurea">Oi! Que bom te ver aqui ❤️</div>
+        <div class="msg aurea">Bem-vinda à Áurea ✨ Cuidado, apoio e informação em um só lugar.</div>
     </div>
+    
     <div class="chat-input">
         <input type="text" id="userInput" placeholder="Digite sua pergunta..." onkeydown="handleChatKey(event)">
         <button onclick="sendMessage()">➤</button>
     </div>
-</div>
-<div id="typingIndicator" class="msg aurea typing" style="display:none;">
-    <span></span><span></span><span></span>
 </div>
 
 <div id="loader" class="loading-screen">
