@@ -408,58 +408,27 @@ function entrarFullscreen() {
         return melhorResposta;
     }
 async function consultarIAGenerativa(pergunta) {
-    const URL_IA = "https://script.google.com/macros/s/AKfycbxeZHBsK-A9VOvZusutG9BxvUFkf3-ICowW0Gr_zkPXEJ2gQUEs9cHsio4IfJm5Z9A/exec";
+    const URL= "https://script.google.com/macros/s/AKfycbwfBo8injePRAJ5STsinJryWYKcZZ8HzrWTulwq61DYlD5KIXHc0Y_U_zHVD5R4VUo/exec";
     
-    const promptSistema = "Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. Responda de forma curta (máximo 3 frases), gentil e use emojis discretos. Nunca dê diagnósticos médicos, sempre sugira consultar o pediatra se for algo grave.";
-
     try {
-        // Histórico de conversa (memória leve: últimas 4 mensagens)
-        const historico = historicoChat.slice(-4).map(msg => ({
-            role: msg.role === "user" ? "user" : "model",
-            parts: [{ text: msg.text }]
-        }));
+    const res = await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ pergunta })
+    });
 
-        // Contexto: se for a primeira interação, envia o prompt de personalidade
-        let mensagemAtual = pergunta;
-        if (historico.length === 0) {
-            mensagemAtual = `${promptSistema}\n\nPergunta: ${pergunta}`;
-        }
+    const data = await res.json();
 
-        historico.push({
-            role: "user",
-            parts: [{ text: mensagemAtual }]
-        });
+    if (data.ok) return data.text;
 
-        const response = await fetch(URL_IA, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({
-                contents: historico // Enviando o array completo para o Apps Script
-            })
-        });
+    return "Erro ao responder 💛";
 
-        if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
-        }
-
-        const data = await response.json();
-        
-        // Como o seu Apps Script já trata o JSON do Gemini e retorna { ok, text },
-        // a lógica aqui fica muito mais simples:
-        if (data && data.ok) {
-            return data.text; 
-        }
-        
-        if (data && data.error) {
-            console.error("Erro reportado pelo Apps Script:", data.error);
-        }
-
-        return "Desculpe, me confundi um pouquinho. Poderia refazer a pergunta? 💛";
-        
-    } catch (error) {
-        console.error("Erro de conexão com o script:", error);
-        return "Puxa, tive um probleminha técnico aqui. Pode perguntar de novo em um instante? 💛";
-    }
+  } catch (e) {
+    console.error(e);
+    return "Erro de conexão 💛";
+  }
 }
 
     function toggleChat() {
