@@ -279,41 +279,26 @@ function entrarFullscreen() {
     const FALLBACK_FAQ = {
         intents: [
             {
-                name: "sono",
-                keywords: ["sono", "dormir", "acordar", "rotina sono", "noite"],
-                patterns: ["como melhorar o sono", "bebê não dorme", "horário de dormir"],
-                responses: ["😴 Tente criar uma rotina relaxante antes do sono: banho morno, luz baixa e uma música calma.", "💤 O ideal para a idade do Gabriel é de 14 a 17h de sono por dia."]
+                
             },
             {
-                name: "amamentacao",
-                keywords: ["amamentar", "mamar", "peito", "leite", "mamada"],
-                patterns: ["quanto tempo mamar", "bebê não quer mamar", "intervalo amamentação"],
-                responses: ["🍼 Ofereça o peito sempre que ele demonstrar fome. Em média, a cada 2-3 horas.", "👶 A amamentação em livre demanda é a mais indicada."]
+                
             },
             {
-                name: "choro",
-                keywords: ["choro", "chorar", "chora", "chorando", "desconforto"],
-                patterns: ["bebê chora muito", "como acalmar", "cólica"],
-                responses: ["💛 Verifique fome, fralda suja ou cansaço. Uma massagem suave na barriga ajuda.", "🎶 Tente um barulho branco ou contato pele a pele."]
+                
             },
             {
-                name: "fralda",
-                keywords: ["fralda", "trocar", "xixi", "cocô"],
-                patterns: ["quantas fraldas", "trocar fralda quantas vezes"],
-                responses: ["🧷 Em média, 6 a 8 fraldas por dia é saudável.", "🚼 Fraldas muito secas por várias horas merecem atenção."]
+                
             },
             {
-                name: "saude",
-                keywords: ["febre", "vômito", "diarreia", "remédio", "medicação"],
-                patterns: ["bebê está doente", "temperatura alta", "o que fazer"],
-                responses: ["⚠️ Febre acima de 38°C em bebês pequenos merece atendimento médico.", "💊 Não medique por conta própria. Consulte o pediatra."]
+                
             }
         ]
     };
 
     async function carregarFAQ() {
         try {
-            const res = await fetch('aurea_faq.json');
+            const res = await fetch('aurea_faq');
             if (res.ok) {
                 baseFAQ = await res.json();
                 console.log("✅ FAQ carregado do arquivo externo.");
@@ -408,43 +393,100 @@ function entrarFullscreen() {
         return melhorResposta;
     }
 async function consultarIAGenerativa(pergunta) {
-  // 💡 DICA: Verifique se este é o link da sua ÚLTIMA "Nova Implantação"
-  const URL = "https://script.google.com/macros/s/AKfycbwx0fRyycwv3LHo8cQWIVhQn9g9wf_XBsYq1iQuOxaJNG5SbYge3m0JyxgK34nJnaI/exec";
-  
-  try {
-    const res = await fetch(URL, {
-      method: "POST",
-      // 🟢 MUDANÇA CRUCIAL: text/plain evita o "Preflight OPTIONS" que causa o erro de CORS
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      // 🟢 AJUSTE: Enviando 'contents' para bater com o seu doPost que usa body.contents
-      body: JSON.stringify({
-        contents: [
-          {
+
+    // 🔥 URL DO SEU APPS SCRIPT
+    const URL = "https://script.google.com/macros/s/AKfycbycXWpCb-ymHyS1Br3esqHT43C-2buhLkoDWEtoQWSweSz043u4Qo1RweqC7cd6P6M/exec";
+
+    // 🧠 PERSONALIDADE DA ÁUREA
+    const promptSistema = `
+Você é Áurea, uma inteligência artificial premium especialista em:
+
+- maternidade
+- amamentação
+- sono infantil
+- desenvolvimento do bebê
+- introdução alimentar
+- rotina infantil
+- comportamento do bebê
+- apoio emocional materno
+- cuidados neonatais
+
+COMPORTAMENTO:
+- Responda SEMPRE de maneira completa, útil e acolhedora.
+- Explique bem.
+- Nunca responda de forma curta demais.
+- Respostas devem parecer humanas.
+- Use linguagem natural e empática.
+- Pode usar emojis suaves.
+- Organize em pequenos parágrafos.
+- Quando necessário, dê dicas práticas.
+- Quando o assunto for sério, sugira procurar o pediatra.
+
+IMPORTANTE:
+- Nunca diga apenas "sim" ou "não".
+- Desenvolva a resposta.
+- Não seja robótica.
+- Seja elegante, moderna e calorosa.
+`;
+
+    try {
+
+        // 🧠 MEMÓRIA DAS ÚLTIMAS MENSAGENS
+        const historico = historicoChat
+            .slice(-10)
+            .map(msg => ({
+                role: msg.role,
+                parts: [{ text: msg.text }]
+            }));
+
+        // 👤 NOVA MENSAGEM
+        historico.push({
             role: "user",
-            parts: [{ text: pergunta }]
-          }
-        ]
-      })
-    });
+            parts: [{
+                text: `${promptSistema}\n\nPergunta da mãe/pai: ${pergunta}`
+            }]
+        });
 
-    // O Apps Script redireciona a requisição, o fetch lida com isso automaticamente
-    const data = await res.json();
+        // 🌐 REQUISIÇÃO PARA O APPS SCRIPT
+        const response = await fetch(URL, {
+            method: "POST",
 
-    // No seu Apps Script você definiu o retorno como { ok: true, text: ... }
-    if (data && data.ok) {
-      return data.text;
+            // 🔥 IMPORTANTE:
+            // text/plain evita erro de CORS no Apps Script
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+
+            body: JSON.stringify({
+                contents: historico
+            })
+        });
+
+        // ❌ ERRO HTTP
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        console.log("✅ Resposta IA:", data);
+
+        // ✅ SUCESSO
+        if (data.ok && data.text) {
+            return data.text;
+        }
+
+        // ❌ FALHA CONTROLADA
+        return "Tive dificuldade para responder agora 💛";
+
+    } catch (error) {
+
+        console.error("❌ Erro IA:", error);
+
+        return "Erro de conexão com a IA 💛";
     }
-
-    console.error("Resposta da API sem sucesso:", data);
-    return "Erro ao responder 💛";
-
-  } catch (e) {
-    console.error("Falha na comunicação com a Áurea:", e);
-    return "Erro de conexão 💛";
-  }
 }
+
 
     function toggleChat() {
     const c = document.getElementById("chatWindow");
@@ -452,8 +494,13 @@ async function consultarIAGenerativa(pergunta) {
 }
 
 function createTypingIndicator() {
-    const indicator = document.createElement("div");
-    indicator.className = "msg aurea thinking";
+
+    const indicator =
+        document.createElement("div");
+
+    indicator.className =
+        "msg aurea thinking";
+
     indicator.innerHTML = `
         <div class="typing-dots">
             <span></span>
@@ -461,6 +508,7 @@ function createTypingIndicator() {
             <span></span>
         </div>
     `;
+
     return indicator;
 }
 
@@ -469,7 +517,7 @@ function removeTypingIndicator() {
     if (indicator) indicator.remove();
 }
 
-async function typeWriter(element, text, speed = 25) {
+async function typeWriter(element, text, speed = 12) {
     element.innerHTML = "";
     for (let i = 0; i < text.length; i++) {
         element.innerHTML += text[i];
