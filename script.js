@@ -333,36 +333,60 @@ function entrarFullscreen() {
     }
 
     function similaridade(a, b) {
-    const wordsA = a.split(" ");
-    const wordsB = b.split(" ");
+        const wordsA = a.split(/\s+/).filter(w => w.length > 2); // ignora palavras pequenas
+        const wordsB = b.split(/\s+/).filter(w => w.length > 2);
 
-    let score = 0;
+        if (wordsB.length === 0) return 0;
 
-    wordsA.forEach(w => {
-        if (wordsB.includes(w)) score += 2;
-    });
+        let score = 0;
 
-    return score / (wordsB.length || 1);
-}
+        wordsA.forEach(wA => {
+            wordsB.forEach(wB => {
+                if (wA === wB) {
+                    score += 2;
+                } else if (wA.length > 3 && wB.length > 3 && (wA.includes(wB) || wB.includes(wA))) {
+                    score += 1; // Correspondência parcial
+                }
+            });
+        });
+
+        return score / wordsB.length;
+    }
 
     function responderAurea(pergunta) {
-    if (!baseFAQ || !baseFAQ.intents) return null;
+        if (!baseFAQ) return null;
 
-    const texto = normalizarTexto(pergunta);
-    let melhorResposta = null;
-    let melhorScore = 0;
+        const texto = normalizarTexto(pergunta);
+        let melhorResposta = null;
+        let melhorScore = 0;
 
-    baseFAQ.intents.forEach(categoria => {
-        if (!categoria.intents) return;
+        // Trata possíveis inconsistências no JSON: array direto, array dentro de intents, ou categorias com intents
+        let intentsArray = [];
+        if (Array.isArray(baseFAQ)) {
+            intentsArray = baseFAQ;
+        } else if (baseFAQ.intents) {
+            if (baseFAQ.intents.length > 0 && baseFAQ.intents[0].intents) {
+                // Estrutura de categorias
+                baseFAQ.intents.forEach(cat => {
+                    if (cat.intents) intentsArray.push(...cat.intents);
+                });
+            } else {
+                // Estrutura de intents plana
+                intentsArray = baseFAQ.intents;
+            }
+        }
 
-        categoria.intents.forEach(item => {
+        intentsArray.forEach(item => {
             let score = 0;
-            item.patterns.forEach(p => {
-                score += similaridade(texto, normalizarTexto(p)) * 5;
-            });
+            
+            if (item.patterns && Array.isArray(item.patterns)) {
+                item.patterns.forEach(p => {
+                    score += similaridade(texto, normalizarTexto(p)) * 5;
+                });
+            }
 
-            if (categoria.keywords) {
-                categoria.keywords.forEach(k => {
+            if (item.keywords && Array.isArray(item.keywords)) {
+                item.keywords.forEach(k => {
                     if (texto.includes(normalizarTexto(k))) score += 3;
                 });
             }
@@ -370,40 +394,77 @@ function entrarFullscreen() {
             if (score > melhorScore) {
                 melhorScore = score;
                 const respostas = item.responses || [item.response];
-                melhorResposta = respostas[Math.floor(Math.random() * respostas.length)];
+                if (respostas && respostas.length > 0 && respostas[0]) {
+                    melhorResposta = respostas[Math.floor(Math.random() * respostas.length)];
+                }
             }
         });
-    });
 
-    // Se a confiança for baixa, retornamos null para ativar o Gemini
-    if (!melhorResposta || melhorScore < 1.5) {
-        return null;
+        // Se a confiança for baixa, retornamos null para acionar a API do Gemini
+        if (!melhorResposta || melhorScore < 2.0) {
+            return null;
+        }
+
+        return melhorResposta;
     }
-
-    return melhorResposta;
-}
 async function consultarIAGenerativa(pergunta) {
     const URL_IA = "https://script.google.com/macros/s/AKfycbxUkhYoPvBOYR-Sguj23SzWizhZb3mpKKMVgnkg0RUWNZ8D9Jm2W-UO-XgjpP-pgoQ/exec";
    
-
     const promptSistema = "Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. Responda de forma curta (máximo 3 frases), gentil e use emojis discretos. Nunca dê diagnósticos médicos, sempre sugira consultar o pediatra se for algo grave.";
 
     try {
-        const response = await fetch(URL, {
+        // Histórico de conversa (memória leve: últimas 4 mensagens)
+        const historico = historicoChat.slice(-4).map(msg => ({
+            role: msg.role === "user" ? "user" : "model",
+            parts: [{ text: msg.text }]
+        }));
+
+        // Insere a pergunta com contexto caso seja o início do chat
+        let mensagemAtual = pergunta;
+        if (historico.length === 0 || !historico.some(h => h.role === "user")) {
+            mensagemAtual = `${promptSistema}\n\nPergunta da mãe: ${pergunta}`;
+        }
+
+        historico.push({
+            role: "user",
+            parts: [{ text: mensagemAtual }]
+        });
+
+        const response = await fetch(URL_IA, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "text/plain;charset=utf-8" }, // text/plain evita bloqueios de CORS preflight
             body: JSON.stringify({
-                contents: [{ 
-                    parts: [{ text: `${promptSistema}\nPergunta da mãe: ${pergunta}` }] 
-                }]
+                contents: historico
             })
         });
 
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+
         const data = await response.json();
-        return data.candidates[0].content.parts[0].text;
+        
+        // Validação completa da resposta (candidates, content, parts)
+        if (data && data.candidates && data.candidates.length > 0) {
+            const candidate = data.candidates[0];
+            if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+                return candidate.content.parts[0].text;
+            }
+        }
+        
+        if (data && data.error) {
+            console.error("Erro da API do Gemini:", data.error.message);
+        } else {
+            console.warn("Resposta vazia ou formato inesperado:", data);
+        }
+
+        // Fallback em caso de resposta vazia ou estrutura diferente
+        return "Desculpe, me confundi um pouquinho. Poderia refazer a pergunta? 💛";
+        
     } catch (error) {
         console.error("Erro na API Gemini:", error);
-        return "Puxa, tive um probleminha técnico aqui. Pode perguntar de novo? 💛";
+        // Fallback seguro em caso de falha de requisição, não quebra o sistema
+        return "Puxa, tive um probleminha técnico aqui. Pode perguntar de novo em um instante? 💛";
     }
 }
 
@@ -462,6 +523,9 @@ async function sendMessage() {
     // 💬 Usuário envia mensagem
     appendMsg(texto, "user");
     input.value = "";
+    
+    // Atualiza memória (histórico)
+    historicoChat.push({ role: "user", text: texto });
 
     // 🧠 Mostra indicador de pensamento
     const chatBody = document.getElementById("chatBody");
@@ -472,7 +536,7 @@ async function sendMessage() {
     // 1. Tenta buscar no FAQ local
     let resposta = responderAurea(texto);
 
-    // 2. Se não encontrou no FAQ, chama o Gemini[cite: 1]
+    // 2. Se não encontrou no FAQ, chama a API do Gemini
     if (resposta === null) {
         resposta = await consultarIAGenerativa(texto);
     } else {
@@ -483,7 +547,10 @@ async function sendMessage() {
     // Remove indicador de pensamento
     removeTypingIndicator();
 
-    // 📝 Cria elemento da resposta e aplica o efeito de digitação[cite: 1]
+    // Atualiza memória da resposta
+    historicoChat.push({ role: "model", text: resposta });
+
+    // 📝 Cria elemento da resposta e aplica o efeito de digitação
     const msgElement = document.createElement("div");
     msgElement.className = "msg aurea";
     chatBody.appendChild(msgElement);
