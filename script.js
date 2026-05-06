@@ -270,108 +270,188 @@ function entrarFullscreen() {
     let charts = {};
 
     // ==========================
-// 🧠 CHAT ÁUREA - LÓGICA CORRIGIDA
-// ==========================
-let baseFAQ = null;
+    // 🧠 CHAT ÁUREA - FALLBACK EMBUTIDO
+    // ==========================
+    let baseFAQ = null;
+    let historicoChat = [];
+    
 
-async function carregarFAQ() {
-    try {
-        const res = await fetch('aurea_faq.json');
-        if (res.ok) {
-            baseFAQ = await res.json();
-            console.log("✅ FAQ carregado com sucesso.");
-        } else {
-            throw new Error();
+    const FALLBACK_FAQ = {
+        intents: [
+            {
+                name: "sono",
+                keywords: ["sono", "dormir", "acordar", "rotina sono", "noite"],
+                patterns: ["como melhorar o sono", "bebê não dorme", "horário de dormir"],
+                responses: ["😴 Tente criar uma rotina relaxante antes do sono: banho morno, luz baixa e uma música calma.", "💤 O ideal para a idade do Gabriel é de 14 a 17h de sono por dia."]
+            },
+            {
+                name: "amamentacao",
+                keywords: ["amamentar", "mamar", "peito", "leite", "mamada"],
+                patterns: ["quanto tempo mamar", "bebê não quer mamar", "intervalo amamentação"],
+                responses: ["🍼 Ofereça o peito sempre que ele demonstrar fome. Em média, a cada 2-3 horas.", "👶 A amamentação em livre demanda é a mais indicada."]
+            },
+            {
+                name: "choro",
+                keywords: ["choro", "chorar", "chora", "chorando", "desconforto"],
+                patterns: ["bebê chora muito", "como acalmar", "cólica"],
+                responses: ["💛 Verifique fome, fralda suja ou cansaço. Uma massagem suave na barriga ajuda.", "🎶 Tente um barulho branco ou contato pele a pele."]
+            },
+            {
+                name: "fralda",
+                keywords: ["fralda", "trocar", "xixi", "cocô"],
+                patterns: ["quantas fraldas", "trocar fralda quantas vezes"],
+                responses: ["🧷 Em média, 6 a 8 fraldas por dia é saudável.", "🚼 Fraldas muito secas por várias horas merecem atenção."]
+            },
+            {
+                name: "saude",
+                keywords: ["febre", "vômito", "diarreia", "remédio", "medicação"],
+                patterns: ["bebê está doente", "temperatura alta", "o que fazer"],
+                responses: ["⚠️ Febre acima de 38°C em bebês pequenos merece atendimento médico.", "💊 Não medique por conta própria. Consulte o pediatra."]
+            }
+        ]
+    };
+
+    async function carregarFAQ() {
+        try {
+            const res = await fetch('aurea_faq.json');
+            if (res.ok) {
+                baseFAQ = await res.json();
+                console.log("✅ FAQ carregado do arquivo externo.");
+            } else {
+                throw new Error("Arquivo não encontrado");
+            }
+        } catch (e) {
+            console.warn("⚠️ Usando FAQ interno (fallback).", e);
+            baseFAQ = FALLBACK_FAQ;
         }
-    } catch (e) {
-        console.warn("⚠️ Usando FAQ interno (fallback).");
-        baseFAQ = FALLBACK_FAQ;
+    }
+
+    function normalizarTexto(texto) {
+        return texto.toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^\w\s]/g, "");
+    }
+
+    function similaridade(a, b) {
+    const wordsA = a.split(" ");
+    const wordsB = b.split(" ");
+
+    let score = 0;
+
+    wordsA.forEach(w => {
+        if (wordsB.includes(w)) score += 2;
+    });
+
+    return score / (wordsB.length || 1);
+}
+
+    function responderAurea(pergunta) {
+    if (!baseFAQ || !baseFAQ.intents) return null;
+
+    const texto = normalizarTexto(pergunta);
+    let melhorResposta = null;
+    let melhorScore = 0;
+
+    baseFAQ.intents.forEach(categoria => {
+        if (!categoria.intents) return;
+
+        categoria.intents.forEach(item => {
+            let score = 0;
+            item.patterns.forEach(p => {
+                score += similaridade(texto, normalizarTexto(p)) * 5;
+            });
+
+            if (categoria.keywords) {
+                categoria.keywords.forEach(k => {
+                    if (texto.includes(normalizarTexto(k))) score += 3;
+                });
+            }
+
+            if (score > melhorScore) {
+                melhorScore = score;
+                const respostas = item.responses || [item.response];
+                melhorResposta = respostas[Math.floor(Math.random() * respostas.length)];
+            }
+        });
+    });
+
+    // Se a confiança for baixa, retornamos null para ativar o Gemini
+    if (!melhorResposta || melhorScore < 1.5) {
+        return null;
+    }
+
+    return melhorResposta;
+}
+async function consultarIAGenerativa(pergunta) {
+    const API_KEY = "AIzaSyD-j-O3MLOtkUSF2fp_LTMpf1kiUKSQoAk"; // Substitua pela sua chave
+    const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+    const promptSistema = "Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. Responda de forma curta (máximo 3 frases), gentil e use emojis discretos. Nunca dê diagnósticos médicos, sempre sugira consultar o pediatra se for algo grave.";
+
+    try {
+        const response = await fetch(URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ 
+                    parts: [{ text: `${promptSistema}\nPergunta da mãe: ${pergunta}` }] 
+                }]
+            })
+        });
+
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text;
+    } catch (error) {
+        console.error("Erro na API Gemini:", error);
+        return "Puxa, tive um probleminha técnico aqui. Pode perguntar de novo? 💛";
     }
 }
 
-// Inicializa o FAQ ao carregar
+    function toggleChat() {
+    const c = document.getElementById("chatWindow");
+    c.style.display = c.style.display === "flex" ? "none" : "flex";
+}
+
+function createTypingIndicator() {
+    const indicator = document.createElement("div");
+    indicator.className = "msg aurea thinking";
+    indicator.innerHTML = `
+        <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    `;
+    return indicator;
+}
+
+function removeTypingIndicator() {
+    const indicator = document.querySelector('.msg.thinking');
+    if (indicator) indicator.remove();
+}
+
+async function typeWriter(element, text, speed = 25) {
+    element.innerHTML = "";
+    for (let i = 0; i < text.length; i++) {
+        element.innerHTML += text[i];
+        await new Promise(resolve => setTimeout(resolve, speed));
+    }
+}
 
 function appendMsg(texto, sender) {
     const chatBody = document.getElementById("chatBody");
     const msgDiv = document.createElement("div");
     msgDiv.className = `msg ${sender}`;
-    msgDiv.textContent = texto;
+    
+    if (sender === "aurea") {
+        msgDiv.innerHTML = texto;
+    } else {
+        msgDiv.textContent = texto;
+    }
+    
     chatBody.appendChild(msgDiv);
     chatBody.scrollTop = chatBody.scrollHeight;
     return msgDiv;
-}
-
-function createTypingIndicator() {
-    const div = document.createElement("div");
-    div.className = "msg aurea thinking";
-    div.innerHTML = "<span>Áurea está digitando</span><span class='dot-floating'>...</span>";
-    return div;
-}
-
-function removeTypingIndicator() {
-    document.querySelectorAll('.thinking').forEach(el => el.remove());
-}
-
-async function typeWriter(element, text) {
-    element.textContent = "";
-    for (let i = 0; i < text.length; i++) {
-        element.textContent += text[i];
-        await new Promise(r => setTimeout(r, 30));
-    }
-}
-
-function normalizarTexto(texto) {
-    return texto.toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^\w\s]/g, "");
-}
-
-function similaridade(a, b) {
-    const wordsA = a.split(/\s+/).filter(Boolean);
-    const wordsB = b.split(/\s+/).filter(Boolean);
-    let score = 0;
-    wordsA.forEach(w => {
-        if (wordsB.includes(w)) score += 2;
-    });
-    return score / (wordsB.length || 1);
-}
-
-function responderPeloFAQ(pergunta) {
-    if (!baseFAQ || !baseFAQ.intents) return null;
-    const texto = normalizarTexto(pergunta);
-    let melhorResposta = null, melhorScore = 0;
-    baseFAQ.intents.forEach(intent => {
-        let score = 0;
-        if (intent.keywords) {
-            intent.keywords.forEach(k => {
-                if (texto.includes(normalizarTexto(k))) score += 4;
-            });
-        }
-        if (score > melhorScore && score >= 2.5) {
-            melhorScore = score;
-            const respostas = intent.responses || [intent.response];
-            melhorResposta = respostas[Math.floor(Math.random() * respostas.length)];
-        }
-    });
-    return melhorResposta;
-}
-
-  async function consultarIAGenerativa(pergunta) {
-    const URL_IA = "https://script.google.com/macros/s/AKfycbxUkhYoPvBOYR-Sguj23SzWizhZb3mpKKMVgnkg0RUWNZ8D9Jm2W-UO-XgjpP-pgoQ/exec";
-    const promptSistema = `Você é a Áurea, assistente virtual acolhedora e especialista em maternidade. Responda de forma curta (máximo 3 frases) e gentil. Nunca dê diagnósticos médicos.\n\nPergunta: ${pergunta}`;
-    try {
-        const response = await fetch(URL_IA, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: promptSistema })
-        });
-        const data = await response.json();
-        // Adapte conforme o retorno real do seu Google Apps Script
-        return data.resposta || data.candidates?.[0]?.content?.parts?.[0]?.text || null;
-    } catch (error) {
-        console.error("Erro na IA:", error);
-        return null;
-    }
 }
 
 async function sendMessage() {
@@ -379,19 +459,37 @@ async function sendMessage() {
     const texto = input.value.trim();
     if (!texto) return;
 
+    // 💬 Usuário envia mensagem
     appendMsg(texto, "user");
     input.value = "";
 
-    const loadingMsg = createTypingIndicator();
-    document.getElementById("chatBody").appendChild(loadingMsg);
+    // 🧠 Mostra indicador de pensamento
+    const chatBody = document.getElementById("chatBody");
+    const thinking = createTypingIndicator();
+    chatBody.appendChild(thinking);
+    chatBody.scrollTop = chatBody.scrollHeight;
 
-    let resposta = responderPeloFAQ(texto);
-    if (!resposta) resposta = await consultarIAGenerativa(texto);
-    if (!resposta) resposta = "Ainda estou aprendendo sobre isso 💛 Pode tentar reformular ou falar com o pediatra?";
+    // 1. Tenta buscar no FAQ local
+    let resposta = responderAurea(texto);
 
+    // 2. Se não encontrou no FAQ, chama o Gemini[cite: 1]
+    if (resposta === null) {
+        resposta = await consultarIAGenerativa(texto);
+    } else {
+        // Se achou no local, apenas um delay curto para parecer natural
+        await new Promise(resolve => setTimeout(resolve, 800));
+    }
+
+    // Remove indicador de pensamento
     removeTypingIndicator();
-    const msgDiv = appendMsg("", "aurea");
-    await typeWriter(msgDiv, resposta);
+
+    // 📝 Cria elemento da resposta e aplica o efeito de digitação[cite: 1]
+    const msgElement = document.createElement("div");
+    msgElement.className = "msg aurea";
+    chatBody.appendChild(msgElement);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    await typeWriter(msgElement, resposta);
 }
     // ==========================
     // 📊 DADOS E GRÁFICOS
@@ -465,40 +563,37 @@ async function sendMessage() {
     async function init() {
     const loader = document.getElementById('loader');
     const content = document.getElementById('app-content');
+    
     try {
-        // Carrega frases personalizadas se existirem
         try {
             const resF = await fetch('frases.json');
-            if (resF.ok) {
-                const frasesExtras = await resF.json();
-                // Mescla profundamente (exemplo simples)
-                frasesIA = { ...frasesIA, ...frasesExtras };
-            }
-        } catch(e) { console.warn("frases.json não encontrado, usando padrão."); }
+            if (resF.ok) frasesIA = await resF.json();
+        } catch(e) { 
+            console.warn("Usando frases padrão."); 
+        }
 
         const resD = await fetch(API);
-        if (!resD.ok) throw new Error("Erro ao buscar dados da planilha");
+        if (!resD.ok) throw new Error();
         dadosOriginais = await resD.json();
-
+        
         loader.style.opacity = '0';
-        setTimeout(() => {
-            loader.style.visibility = 'hidden';
-            content.style.visibility = 'visible';
-            content.style.opacity = '1';
+        setTimeout(() => { 
+            loader.style.visibility = 'hidden'; 
+            content.style.visibility = 'visible'; 
+            content.style.opacity = '1'; 
         }, 600);
-
+        
         popularFiltro(dadosOriginais);
         processar(dadosOriginais);
     } catch (e) {
-        console.error(e);
-        document.getElementById("relatorioIA").innerHTML = "❌ Erro ao carregar dados da planilha. Verifique a URL da API.";
+        document.getElementById("relatorioIA").innerHTML = "❌ Erro ao carregar dados da planilha.";
         loader.style.display = 'none';
         content.style.visibility = 'visible';
         content.style.opacity = '1';
     }
 }
 
-// Execução principal
+// Inicialização
 (async function() {
     await carregarFAQ();
     init();
