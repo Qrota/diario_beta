@@ -471,38 +471,40 @@ function removeTypingIndicator() {
     async function init() {
     const loader = document.getElementById('loader');
     const content = document.getElementById('app-content');
-    
     try {
-        // Carrega frases personalizadas
+        // Carrega frases personalizadas se existirem
         try {
             const resF = await fetch('frases.json');
-            if (resF.ok) frasesIA = await resF.json();
-        } catch(e) { 
-            console.warn("Usando frases padrão."); 
-        }
+            if (resF.ok) {
+                const frasesExtras = await resF.json();
+                // Mescla profundamente (exemplo simples)
+                frasesIA = { ...frasesIA, ...frasesExtras };
+            }
+        } catch(e) { console.warn("frases.json não encontrado, usando padrão."); }
 
         const resD = await fetch(API);
-        if (!resD.ok) throw new Error();
+        if (!resD.ok) throw new Error("Erro ao buscar dados da planilha");
         dadosOriginais = await resD.json();
-        
+
         loader.style.opacity = '0';
-        setTimeout(() => { 
-            loader.style.visibility = 'hidden'; 
-            content.style.visibility = 'visible'; 
-            content.style.opacity = '1'; 
+        setTimeout(() => {
+            loader.style.visibility = 'hidden';
+            content.style.visibility = 'visible';
+            content.style.opacity = '1';
         }, 600);
-        
+
         popularFiltro(dadosOriginais);
         processar(dadosOriginais);
     } catch (e) {
-        document.getElementById("relatorioIA").innerHTML = "❌ Erro ao carregar dados da planilha.";
+        console.error(e);
+        document.getElementById("relatorioIA").innerHTML = "❌ Erro ao carregar dados da planilha. Verifique a URL da API.";
         loader.style.display = 'none';
         content.style.visibility = 'visible';
         content.style.opacity = '1';
     }
 }
 
-// Inicialização
+// Execução principal
 (async function() {
     await carregarFAQ();
     init();
