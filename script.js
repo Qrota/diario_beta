@@ -290,7 +290,35 @@ async function carregarFAQ() {
 }
 
 // Inicializa o FAQ ao carregar
-carregarFAQ();
+
+function appendMsg(texto, sender) {
+    const chatBody = document.getElementById("chatBody");
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `msg ${sender}`;
+    msgDiv.textContent = texto;
+    chatBody.appendChild(msgDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    return msgDiv;
+}
+
+function createTypingIndicator() {
+    const div = document.createElement("div");
+    div.className = "msg aurea thinking";
+    div.innerHTML = "<span>Áurea está digitando</span><span class='dot-floating'>...</span>";
+    return div;
+}
+
+function removeTypingIndicator() {
+    document.querySelectorAll('.thinking').forEach(el => el.remove());
+}
+
+async function typeWriter(element, text) {
+    element.textContent = "";
+    for (let i = 0; i < text.length; i++) {
+        element.textContent += text[i];
+        await new Promise(r => setTimeout(r, 30));
+    }
+}
 
 function normalizarTexto(texto) {
     return texto.toLowerCase()
@@ -310,11 +338,8 @@ function similaridade(a, b) {
 
 function responderPeloFAQ(pergunta) {
     if (!baseFAQ || !baseFAQ.intents) return null;
-
     const texto = normalizarTexto(pergunta);
-    let melhorResposta = null;
-    let melhorScore = 0;
-
+    let melhorResposta = null, melhorScore = 0;
     baseFAQ.intents.forEach(intent => {
         let score = 0;
         if (intent.keywords) {
@@ -322,34 +347,29 @@ function responderPeloFAQ(pergunta) {
                 if (texto.includes(normalizarTexto(k))) score += 4;
             });
         }
-        if (score > melhorScore) {
+        if (score > melhorScore && score >= 2.5) {
             melhorScore = score;
             const respostas = intent.responses || [intent.response];
             melhorResposta = respostas[Math.floor(Math.random() * respostas.length)];
         }
     });
-
-    return (melhorScore >= 2.5) ? melhorResposta : null;
+    return melhorResposta;
 }
 
-async function consultarIAGenerativa(pergunta) {
+  async function consultarIAGenerativa(pergunta) {
     const URL_IA = "https://script.google.com/macros/s/AKfycbxUkhYoPvBOYR-Sguj23SzWizhZb3mpKKMVgnkg0RUWNZ8D9Jm2W-UO-XgjpP-pgoQ/exec";
-
-    const promptSistema = `Você é a Áurea, uma assistente virtual acolhedora e especialista em maternidade. Responda de forma curta (máximo 3 frases) e gentil. Nunca dê diagnósticos médicos.`;
-
+    const promptSistema = `Você é a Áurea, assistente virtual acolhedora e especialista em maternidade. Responda de forma curta (máximo 3 frases) e gentil. Nunca dê diagnósticos médicos.\n\nPergunta: ${pergunta}`;
     try {
         const response = await fetch(URL_IA, {
             method: "POST",
-            body: JSON.stringify({
-                prompt: `${promptSistema}\n\nPergunta da mãe: ${pergunta}`
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt: promptSistema })
         });
-
         const data = await response.json();
-        // Ajuste o caminho abaixo conforme o retorno do seu Google Apps Script
+        // Adapte conforme o retorno real do seu Google Apps Script
         return data.resposta || data.candidates?.[0]?.content?.parts?.[0]?.text || null;
     } catch (error) {
-        console.error("Erro na chamada da IA:", error);
+        console.error("Erro na IA:", error);
         return null;
     }
 }
@@ -359,45 +379,19 @@ async function sendMessage() {
     const texto = input.value.trim();
     if (!texto) return;
 
-    // 1. Mostrar mensagem do usuário
     appendMsg(texto, "user");
     input.value = "";
 
-    // 2. Mostrar indicador de digitando
     const loadingMsg = createTypingIndicator();
     document.getElementById("chatBody").appendChild(loadingMsg);
 
-    // 3. Tentar FAQ primeiro, depois IA
     let resposta = responderPeloFAQ(texto);
-    
-    if (!resposta) {
-        resposta = await consultarIAGenerativa(texto);
-    }
+    if (!resposta) resposta = await consultarIAGenerativa(texto);
+    if (!resposta) resposta = "Ainda estou aprendendo sobre isso 💛 Pode tentar reformular ou falar com o pediatra?";
 
-    if (!resposta) {
-        resposta = "Ainda estou aprendendo sobre isso 💛 Pode tentar reformular ou falar com o pediatra?";
-    }
-
-    // 4. Remover indicador e mostrar resposta
     removeTypingIndicator();
     const msgDiv = appendMsg("", "aurea");
     await typeWriter(msgDiv, resposta);
-}
-
-// Funções de UI Auxiliares
-function appendMsg(texto, sender) {
-    const chatBody = document.getElementById("chatBody");
-    const msgDiv = document.createElement("div");
-    msgDiv.className = `msg ${sender}`;
-    msgDiv.textContent = texto;
-    chatBody.appendChild(msgDiv);
-    chatBody.scrollTop = chatBody.scrollHeight;
-    return msgDiv;
-}
-
-function removeTypingIndicator() {
-    const indicators = document.querySelectorAll('.thinking');
-    indicators.forEach(el => el.remove());
 }
     // ==========================
     // 📊 DADOS E GRÁFICOS
