@@ -145,6 +145,19 @@
             justify-content: space-between;
             border-radius: 24px 24px 0 0;
         }
+.chat-header span:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    transition: all 0.2s;
+}
+
+/* Garante que o header distribua o título e os botões */
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+}
         .chat-body {
             flex: 1;
             padding: 12px;
