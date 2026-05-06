@@ -383,8 +383,8 @@ function entrarFullscreen() {
     return melhorResposta;
 }
 async function consultarIAGenerativa(pergunta) {
-    const API_KEY = "AIzaSyD-j-O3MLOtkUSF2fp_LTMpf1kiUKSQoAk"; // Substitua pela sua chave
-    const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    const URL_IA = "https://script.google.com/macros/s/AKfycbxUkhYoPvBOYR-Sguj23SzWizhZb3mpKKMVgnkg0RUWNZ8D9Jm2W-UO-XgjpP-pgoQ/exec";
+   
 
     const promptSistema = "Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. Responda de forma curta (máximo 3 frases), gentil e use emojis discretos. Nunca dê diagnósticos médicos, sempre sugira consultar o pediatra se for algo grave.";
 
