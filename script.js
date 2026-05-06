@@ -295,6 +295,21 @@ function entrarFullscreen() {
             }
         ]
     };
+    function limparChat() {
+    if (confirm("Deseja apagar todo o histórico da conversa?")) {
+        // 1. Limpa o array de memória
+        historicoChat = [];
+        
+        // 2. Limpa a tela (corpo do chat)
+        const chatBody = document.getElementById("chatBody");
+        chatBody.innerHTML = "";
+        
+        // 3. Adiciona a mensagem de boas-vindas novamente
+        appendMsg("Bem-vinda à Áurea ✨ Cuidado, apoio e informação em um só lugar.");
+        
+        console.log("🧹 Histórico do chat apagado.");
+    }
+}
 
     async function carregarFAQ() {
         try {
