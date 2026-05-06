@@ -409,7 +409,7 @@ function entrarFullscreen() {
     }
 async function consultarIAGenerativa(pergunta) {
     const URL_IA = "https://script.google.com/macros/s/AKfycbwvqIyNXGuh7tQ1vRNw68mhdWFO0WOE6lSitNY-ZXpwh8C3Wf9sjkxjITJJj7iz334/exec";
-   
+    
     const promptSistema = "Você é a Áurea, uma assistente virtual acolhedora, empática e especialista em maternidade e cuidados com bebês. Responda de forma curta (máximo 3 frases), gentil e use emojis discretos. Nunca dê diagnósticos médicos, sempre sugira consultar o pediatra se for algo grave.";
 
     try {
@@ -419,10 +419,10 @@ async function consultarIAGenerativa(pergunta) {
             parts: [{ text: msg.text }]
         }));
 
-        // Insere a pergunta com contexto caso seja o início do chat
+        // Contexto: se for a primeira interação, envia o prompt de personalidade
         let mensagemAtual = pergunta;
-        if (historico.length === 0 || !historico.some(h => h.role === "user")) {
-            mensagemAtual = `${promptSistema}\n\nPergunta da mãe: ${pergunta}`;
+        if (historico.length === 0) {
+            mensagemAtual = `${promptSistema}\n\nPergunta: ${pergunta}`;
         }
 
         historico.push({
@@ -432,9 +432,9 @@ async function consultarIAGenerativa(pergunta) {
 
         const response = await fetch(URL_IA, {
             method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" }, // text/plain evita bloqueios de CORS preflight
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({
-                contents: historico
+                contents: historico // Enviando o array completo para o Apps Script
             })
         });
 
@@ -444,26 +444,20 @@ async function consultarIAGenerativa(pergunta) {
 
         const data = await response.json();
         
-        // Validação completa da resposta (candidates, content, parts)
-        if (data && data.candidates && data.candidates.length > 0) {
-            const candidate = data.candidates[0];
-            if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
-                return candidate.content.parts[0].text;
-            }
+        // Como o seu Apps Script já trata o JSON do Gemini e retorna { ok, text },
+        // a lógica aqui fica muito mais simples:
+        if (data && data.ok) {
+            return data.text; 
         }
         
         if (data && data.error) {
-            console.error("Erro da API do Gemini:", data.error.message);
-        } else {
-            console.warn("Resposta vazia ou formato inesperado:", data);
+            console.error("Erro reportado pelo Apps Script:", data.error);
         }
 
-        // Fallback em caso de resposta vazia ou estrutura diferente
         return "Desculpe, me confundi um pouquinho. Poderia refazer a pergunta? 💛";
         
     } catch (error) {
-        console.error("Erro na API Gemini:", error);
-        // Fallback seguro em caso de falha de requisição, não quebra o sistema
+        console.error("Erro de conexão com o script:", error);
         return "Puxa, tive um probleminha técnico aqui. Pode perguntar de novo em um instante? 💛";
     }
 }
