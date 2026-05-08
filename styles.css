@@ -82,8 +82,11 @@
             margin-bottom: 12px;
         }
         h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            color: #0f172a; 
+            letter-spacing: -1.5px; 
+            margin-bottom: 8px;
         }
         .subtitle {
             
@@ -92,9 +95,12 @@
             
         }
         .subtitle-header{
-            font-size: 0.8rem;
-            opacity: 0.8;
-            font-weight: 400;
+            font-size: 0.9rem; 
+            font-weight: 400; 
+            color: #64748b; 
+            max-width: 280px; 
+            margin: 0 auto; 
+            line-height: 1.5;
         }
 
         .grid {
