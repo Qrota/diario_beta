@@ -21,7 +21,7 @@ function entrarFullscreen() {
     // ==========================
     // 🌐 CONFIG API
     // ==========================
-    const API = "https://script.google.com/macros/s/AKfycbzT0tl62oV7UWHoOq2JL6lGMATVkVHMnn28HJ2TFbui0LlI3ZNnHNIz2_MSBKdnxw/exec";
+    const API = "https://script.google.com/macros/s/AKfycbyMSMpoJygEWfcd4TNhWr812KOHGsYmtf724hCJNsmRIUBYIBY_01PNTQ5wFEstUywm/exec";
     let dadosOriginais = [];
     let frasesIA = {
         amamentacao: { critico: ["Nenhuma mamada registrada neste período. Verifique se esqueceu de anotar.",
