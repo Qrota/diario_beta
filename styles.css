@@ -202,9 +202,10 @@
             border: none;
             padding: 15px;
             outline: none;
+            font-size: 0.9rem;
         }
         .chat-input button {
-            width: 40px;
+            width: 50px;
             border-radius: 50%;
             border: none;
             background: var(--primary);
