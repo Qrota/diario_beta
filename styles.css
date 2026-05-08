@@ -250,12 +250,12 @@
             height: 45px; 
             background: url('logo_acalantobebe1.png') center/contain no-repeat; 
             margin: 18px auto 0; 
-            opacity: 0.5; 
+            opacity: 1; 
             filter: grayscale(100%); 
             transition: all 0.4s ease; 
         }
         .footer:hover .footer-logo { 
-            filter: grayscale(0%); 
+            filter: grayscale(100%); 
             opacity: 1; 
             transform: scale(1.05);
         }
