@@ -21,10 +21,10 @@
 
     /* Background */
     --bg-gradient:
-        radial-gradient(circle at 15% 20%, rgba(154, 62, 197, 0.15), transparent 35%),
-        radial-gradient(circle at 85% 10%, rgba(147,197,253,0.18), transparent 35%),
-        radial-gradient(circle at 50% 90%, rgba(244, 114, 181, 0.24), transparent 40%),
-        linear-gradient(135deg, #0f172a 0%, #111827 35%, #1e293b 100%);
+        radial-gradient(circle at 15% 20%, rgba(154, 62, 197, 0.25), transparent 45%),
+        radial-gradient(circle at 85% 10%, rgba(59, 130, 246, 0.25), transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(236, 72, 153, 0.30), transparent 50%),
+        linear-gradient(135deg, #0a0f1d 0%, #111827 40%, #1e293b 100%);
 
     --shadow-soft:
         0 10px 40px rgba(0,0,0,0.18),
