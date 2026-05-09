@@ -1,138 +1,472 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#fdfdfd">
-    <link rel="icon" href="imagens/logo_acalantobebe1.png" type="image/x-icon">
-    <link rel="manifest" href="manifest.json">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Assistente Inteligente | Diário do Gabriel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+  :root {
+            /* === VARIÁVEIS DIA === */
+            --primary: #ff8fab;
+            --secondary: #8093f1;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.45);
+            --text-main: #1f2937;
+            --text-light: #1a1919;
+            --blur: 18px;
+            --bg-gradient: radial-gradient(circle at 20% 20%, #f8c6cc 0%, transparent 50%),
+                          radial-gradient(circle at 80% 10%, #acbcfa 0%, transparent 50%),
+                          radial-gradient(circle at 50% 100%, #f0b5d6 0%, transparent 60%),
+                          #e0f2fe;
+        }
 
-<div id="chat-trigger" onclick="toggleChat()">💬</div>
+        .night {
+            /* === VARIÁVEIS NOITE === */
+            --primary: #f472b6;
+            --secondary: #a5b4fc;
+            --glass-bg: rgba(15, 23, 42, 0.65);
+            --glass-border: rgba(148, 163, 184, 0.25);
+            --text-main: #e2e8f0;
+            --text-light: #f1f5f9;
+            --blur: 20px;
+            --bg-gradient: radial-gradient(circle at 20% 30%, #1e2937 0%, transparent 50%),
+                          radial-gradient(circle at 80% 20%, #221da7 0%, transparent 50%),
+                          radial-gradient(circle at 50% 100%, #532597 0%, transparent 60%),
+                          #0f172a;
+        }
 
-<div class="chat-window" id="chatWindow">
-    <div class="chat-header">
-        <div class="header-content">
-            <div>
-                <strong>ÁUREA</strong>
-                <small> # SEU COLO DIGITAL</small>
-            </div>
-        </div>
-        <div style="display: flex; gap: 12px; align-items: center;">
-            <span onclick="limparChat()" title="Limpar conversa" style="cursor:pointer; font-size: 16px; opacity: 0.8;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">🗑️</span>
-            <span onclick="toggleChat()" style="cursor:pointer; font-size: 20px;">✕</span>
-        </div>
-    </div>
-    
-    <div class="chat-body" id="chatBody">
-        <div class="msg aurea">Bem-vinda ✨ Cuidado, apoio e informação em um só lugar.</div>
-    </div>
-    
-    <div class="chat-input">
-        <input type="text" id="userInput" placeholder="Digite sua pergunta..." onkeydown="handleChatKey(event)">
-        <button onclick="sendMessage()">➤</button>
-    </div>
-</div>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
 
-<div id="loader" class="loading-screen">
-    <div class="spinner"></div>
-    <p class="loader-text">sincronizando memórias...</p>
-</div>
+        body {
+            min-height: 100vh;
+            color: var(--text-main);
+            background: var(--bg-gradient);
+            transition: background 1.2s ease;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+        .glass-card {
+    position: relative;
+    overflow: hidden;
 
-<div class="container" id="app-content" style="opacity: 0; visibility: hidden; transition: opacity 0.5s ease;">
-    <header>
-        <span class="brand-badge">Acalanto Bebê Premium</span>
-        <h1>Diário do Gabriel</h1>
-        <p class="subtitle-header">Monitoramento inteligente com análises de IA em tempo real</p>
-    </header>
+    background: linear-gradient(
+        145deg,
+        rgba(255,255,255,0.14),
+        rgba(255,255,255,0.08)
+    );
 
-    <div class="glass-card" style="padding: 15px 24px; display: flex; align-items: center; justify-content: space-between;">
-        <span style="font-weight: 600; font-size: 0.9rem;">Período:</span>
-        <select id="filtroData" onchange="aplicarFiltro()" style="background: none; border: none; font-weight: 700; color: var(--primary); outline: none; cursor: pointer;">
-            <option value="todos">Todo o Histórico</option>
-        </select>
-    </div>
+    backdrop-filter: blur(var(--blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(180%);
 
-    <div class="glass-card aurea-insight" id="cardRelatorio">
-        <div class="aurea-header">
-            <div class="aurea-avatar"><i class="fas fa-sparkles"></i></div>
-            <div>
-                <strong style="display: block;">ÁUREA</strong>
-                <small style="opacity: 0.6;">Inteligência Preditiva</small>
-            </div>
-        </div>
-        <div id="relatorioIA" style="line-height: 1.6; font-size: 0.95rem;">
-            Aguardando sincronização de dados...
-        </div>
-    </div>
+    border: 1px solid var(--glass-border);
 
-    <div class="grid">
-        <div class="glass-card card-mamada">
-            <h3><span style="font-size: 1.2rem;">🍼</span> Nutrição</h3>
-            <div class="chart-container"><canvas id="chartMamada"></canvas></div>
-        </div>
-        <div class="glass-card card-sono">
-            <h3><span style="font-size: 1.2rem;">😴</span> Descanso</h3>
-            <div class="chart-container"><canvas id="chartSono"></canvas></div>
-        </div>
-        <div class="glass-card card-fralda">
-            <h3><span style="font-size: 1.2rem;">🧷</span> Fraldas</h3>
-            <div class="chart-container"><canvas id="chartFralda"></canvas></div>
-        </div>
-        <div class="glass-card card-med">
-            <h3><span style="font-size: 1.2rem;">💊</span> Saúde</h3>
-            <div class="chart-container"><canvas id="chartMed"></canvas></div>
-        </div>
-    </div>
+    border-radius: 14px;
 
-    <footer class="footer">
-        <p>Acalanto Bebê </p>
-        <p>Desenvolvido com ❤️ e IA avançada</p>
-        <div class="footer-logo"></div>
-    </footer>
-</div>
-<script>
-    // ==================== TROCA AUTOMÁTICA DIA/NOITE ====================
-function updateTheme() {
-    const hour = new Date().getHours();
-    const body = document.body;
+    box-shadow: var(--shadow-soft);
 
-    // Você pode ajustar os horários conforme preferir
-    if (hour >= 18 || hour < 6) {
-        body.classList.add('night');
-        document.documentElement.style.setProperty('--theme-color', '#1e2937');
-    } else {
-        body.classList.remove('night');
-        document.documentElement.style.setProperty('--theme-color', '#e0f2fe');
-    }
+    padding: 24px;
+    margin-bottom: 22px;
+
+    transition: var(--transition);
 }
 
-// Atualiza ao carregar
-document.addEventListener('DOMContentLoaded', () => {
-    updateTheme();
-    
-    // Atualiza a cada minuto (caso o usuário fique muito tempo na página)
-    setInterval(updateTheme, 60000);
+/* Reflexo superior */
+.glass-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
 
-    // Remove loader após carregar
-    setTimeout(() => {
-        const loader = document.getElementById('loader');
-        const app = document.getElementById('app-content');
-        if (loader) loader.style.opacity = '0';
-        if (app) {
-            app.style.opacity = '1';
-            app.style.visibility = 'visible';
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.30) 0%,
+            rgba(255,255,255,0.06) 20%,
+            transparent 45%
+        );
+
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+/* Reflexo diagonal animado */
+.glass-card::after {
+    content: "";
+    position: absolute;
+    top: -120%;
+    left: -60%;
+    width: 200%;
+    height: 220%;
+
+    background: linear-gradient(
+        120deg,
+        transparent 30%,
+        rgba(255,255,255,0.10) 45%,
+        rgba(255,255,255,0.22) 50%,
+        rgba(255,255,255,0.08) 55%,
+        transparent 70%
+    );
+
+    transform: rotate(12deg);
+    transition: 1s ease;
+    pointer-events: none;
+}
+
+.glass-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(255,255,255,0.28);
+}
+.glass-card:hover::after {
+    transform: rotate(12deg) translateX(20%);
+}
+
+
+        aurea-insight {
+    border-left: 1px solid rgba(255,255,255,0.18);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.14),
+            rgba(255,255,255,0.05)
+        );
+}
+        header {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
-    }, 800);
-});
-</script>
-<script src="script.js"></script>
-</body>
-</html>
+        .brand-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .subtitle {
+            
+            opacity: 0.8;
+            font-weight: 300;
+            
+        }
+        .subtitle-header{
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+            gap: 16px;
+        }
+        .chart-container {
+            height: 180px;
+        }
+        #chat-trigger {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+
+    width: 68px;
+    height: 68px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.30),
+            rgba(255,255,255,0.08)
+        );
+
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+
+    border: 1px solid rgba(255,255,255,0.20);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+    font-size: 24px;
+
+    cursor: pointer;
+
+    z-index: 9999;
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.24),
+        inset 0 1px 1px rgba(255,255,255,0.18);
+
+    transition: var(--transition);
+}
+#chat-trigger:hover {
+    transform: scale(1.08);
+    box-shadow:
+        0 18px 60px rgba(0,0,0,0.32),
+        inset 0 1px 1px rgba(255,255,255,0.25);
+}
+
+        .chat-window {
+    position: fixed;
+
+    bottom: 110px;
+    right: 24px;
+
+    width: 360px;
+    height: 560px;
+
+    display: none;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.12),
+            rgba(255,255,255,0.06)
+        );
+
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+
+    border: 1px solid rgba(255,255,255,0.18);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.35),
+        inset 0 1px 1px rgba(255,255,255,0.12);
+
+    z-index: 9999;
+}
+
+/* brilho topo */
+.chat-window::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            160deg,
+            rgba(255,255,255,0.22),
+            transparent 25%
+        );
+
+    pointer-events: none;
+}
+        .chat-header {
+    padding: 18px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(200, 117, 248, 0.22),
+            rgba(245, 91, 124, 0.356)
+        );
+
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+
+    color: white;
+
+    backdrop-filter: blur(12px);
+}
+
+.chat-header span {
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.chat-header span:hover {
+    opacity: 1;
+    transform: scale(1.12);
+}
+
+/* Garante que o header distribua o título e os botões */
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+}
+        .chat-body {
+    flex: 1;
+
+    padding: 18px;
+
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+        .msg {
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            max-width: 80%;
+        }
+        .msg.aurea {
+            background: rgba(255, 255, 255, 0.301);
+            backdrop-filter: blur(6px);
+            font-size: 0.9rem;
+        }
+        .msg.user {
+            background: var(--secondary);
+            color: white;
+            align-self: flex-end;
+            font-size: 0.9rem;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            gap: 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 0 0 24px 24px;
+        }
+        .chat-input input {
+            flex: 1;
+            border-radius: 14px;
+            border: none;
+            padding: 15px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .chat-input button {
+    width: 52px;
+    height: 52px;
+
+    border: none;
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(248, 117, 149, 0.22),
+            rgba(245, 91, 124, 0.356)
+        );
+
+    backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255,255,255,0.18);
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,0.16);
+
+    transition: var(--transition);
+}
+
+.chat-input button:hover {
+    transform: scale(1.08);
+}
+        #loader {
+            position: fixed; 
+            inset: 0; 
+            background: #fcfcfc url("imagens/fundo_x.png") center; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+            transition: opacity 0.6s ease, visibility 0.6s ease; 
+        }
+        .spinner { 
+            width: 45px; 
+            height: 45px; 
+            border: 4px solid rgba(255, 111, 183, 0.15); 
+            border-left-color: #ff6fb7; 
+            border-radius: 50%; 
+            animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite; 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-text {
+            margin-top: 24px; 
+            font-weight: 400; 
+            letter-spacing: 3px; 
+            font-size: 0.9rem;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        @media (max-width:600px){
+            .chat-window{
+                width: calc(100vw - 30px);
+                right: 15px;
+            }
+        }
+        .footer { margin-top: 50px; text-align: center; padding-bottom: 25px;}
+        .footer p { font-size: 0.8rem; color: #ffffff; font-weight: 300; line-height: 1.6; }
+        .footer-logo { 
+            width: 45px; 
+            height: 45px; 
+            background: url('imagens/logo_acalantobebe1.png') center/contain no-repeat; 
+            margin: 18px auto 0; 
+            opacity: 0.9; 
+            filter: grayscale(100%); 
+            transition: all 0.4s ease; 
+        }
+        .footer:hover .footer-logo { 
+            filter: grayscale(100%); 
+            opacity: 1; 
+            transform: scale(1.05);
+        }
+        .relatorio-item {
+            margin-bottom: 8px;
+            padding: 6px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.247);
+        }
+      /* Container das bolinhas */
+.typing-dots {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px;
+}
+
+/* Estilo individual de cada bolinha */
+.typing-dots span {
+    width: 8px;
+    height: 8px;
+    background-color: #9b51e0; /* Cor temática de IA (Roxo/Aurea) */
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 1.4s infinite ease-in-out both;
+}
+
+/* Delay para criar o efeito de onda */
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+/* Keyframes da animação */
+@keyframes pulse {
+    0%, 80%, 100% { 
+        transform: scale(0);
+        opacity: 0.3;
+    } 
+    40% { 
+        transform: scale(1.0);
+        opacity: 1;
+    }
+}
