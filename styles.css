@@ -1,302 +1,720 @@
-  :root {
-            /* === VARIÁVEIS DIA === */
-            --primary: #ff8fab;
-            --secondary: #8093f1;
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.45);
-            --text-main: #1f2937;
-            --text-light: #1a1919;
-            --blur: 18px;
-            --bg-gradient: radial-gradient(circle at 20% 20%, #f8c6cc 0%, transparent 50%),
-                          radial-gradient(circle at 80% 10%, #acbcfa 0%, transparent 50%),
-                          radial-gradient(circle at 50% 100%, #f0b5d6 0%, transparent 60%),
-                          #e0f2fe;
-        }
+:root {
+    /* =========================
+       🍎 APPLE LIQUID GLASS UI
+    ========================== */
 
-        .night {
-            /* === VARIÁVEIS NOITE === */
-            --primary: #f472b6;
-            --secondary: #a5b4fc;
-            --glass-bg: rgba(15, 23, 42, 0.65);
-            --glass-border: rgba(148, 163, 184, 0.25);
-            --text-main: #e2e8f0;
-            --text-light: #f1f5f9;
-            --blur: 20px;
-            --bg-gradient: radial-gradient(circle at 20% 30%, #1e2937 0%, transparent 50%),
-                          radial-gradient(circle at 80% 20%, #221da7 0%, transparent 50%),
-                          radial-gradient(circle at 50% 100%, #532597 0%, transparent 60%),
-                          #0f172a;
-        }
+    --primary: rgba(255, 143, 171, 0.95);
+    --secondary: rgba(128, 147, 241, 0.95);
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Outfit', sans-serif;
-        }
+    /* Glass */
+    --glass-bg: rgba(255, 255, 255, 0.12);
+    --glass-bg-strong: rgba(255, 255, 255, 0.18);
+    --glass-border: rgba(255, 255, 255, 0.22);
+    --glass-highlight: rgba(255, 255, 255, 0.45);
 
-        body {
-            min-height: 100vh;
-            color: var(--text-main);
-            background: var(--bg-gradient);
-            transition: background 1.2s ease;
-            overflow-x: hidden;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-        }
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--blur)) saturate(180%);
-            -webkit-backdrop-filter: blur(var(--blur)) saturate(180%);
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.4s ease;
-        }
-        .glass-card:hover {
-            transform: translateY(-4px);
-        }
-        .aurea-insight {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,143,171,0.1));
-            border-left: 4px solid var(--primary);
-        }
-        header {
-            text-align: center;
-            color: var(--text-light);
-            margin-bottom: 20px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        .brand-badge {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 50px;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-        }
-        h1 {
-            font-size: 2.5rem; 
-            font-weight: 700; 
-            color: #0f172a; 
-            letter-spacing: -1.5px; 
-            margin-bottom: 8px;
-        }
-        .subtitle {
-            
-            opacity: 0.8;
-            font-weight: 300;
-            
-        }
-        .subtitle-header{
-            font-size: 0.9rem; 
-            font-weight: 400; 
-            color: #64748b; 
-            max-width: 280px; 
-            margin: 0 auto; 
-            line-height: 1.5;
-        }
+    /* Text */
+    --text-main: #f8fafc;
+    --text-light: rgba(255,255,255,0.75);
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
-            gap: 16px;
-        }
-        .chart-container {
-            height: 180px;
-        }
-        #chat-trigger {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #f472b6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 22px;
-            box-shadow: 0 10px 30px rgba(255, 143, 171, 0.5);
-            cursor: pointer;
-            z-index: 9999;
-        }
-        .chat-window {
-            position: fixed;
-            bottom: 100px;
-            right: 25px;
-            width: 340px;
-            height: 500px;
-            display: none;
-            flex-direction: column;
-            border-radius: 24px;
-            background: url("fundo_x.png");
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.25);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-            z-index: 9999;
-        }
-        .chat-header {
-            padding: 16px;
-            color: white;
-            background: linear-gradient(135deg, #fc8292, #ad71e9);
-            display: flex;
-            justify-content: space-between;
-            border-radius: 24px 24px 0 0;
-        }
+    /* Blur */
+    --blur: 22px;
+
+    /* Background */
+    --bg-gradient:
+        radial-gradient(circle at 15% 20%, rgba(154, 62, 197, 0.15), transparent 35%),
+        radial-gradient(circle at 85% 10%, rgba(147,197,253,0.18), transparent 35%),
+        radial-gradient(circle at 50% 90%, rgba(244, 114, 181, 0.24), transparent 40%),
+        linear-gradient(135deg, #0f172a 0%, #111827 35%, #1e293b 100%);
+
+    --shadow-soft:
+        0 10px 40px rgba(0,0,0,0.18),
+        0 2px 12px rgba(255,255,255,0.04),
+        inset 0 1px 1px rgba(255,255,255,0.18);
+
+    --shadow-hover:
+        0 18px 60px rgba(0,0,0,0.28),
+        inset 0 1px 1px rgba(255,255,255,0.24);
+
+    --radius-xl: 28px;
+    --radius-lg: 24px;
+    --radius-md: 20px;
+
+    --transition: all 0.35s ease;
+}
+
+/* =========================
+   RESET
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: var(--text-main);
+    background: var(--bg-gradient);
+    position: relative;
+}
+
+/* Glow background layers */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+body::before {
+    background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.08), transparent 25%),
+        radial-gradient(circle at 80% 20%, rgba(96,165,250,0.10), transparent 30%);
+    filter: blur(60px);
+}
+
+body::after {
+    background:
+        linear-gradient(
+            130deg,
+            rgba(255,255,255,0.05) 0%,
+            transparent 30%,
+            rgba(255,255,255,0.03) 60%,
+            transparent 100%
+        );
+}
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    max-width: 920px;
+    margin: auto;
+    padding: 24px;
+    position: relative;
+    z-index: 2;
+}
+
+/* =========================
+   LIQUID GLASS CARD
+========================= */
+
+.glass-card {
+    position: relative;
+    overflow: hidden;
+
+    background: linear-gradient(
+        145deg,
+        rgba(255,255,255,0.14),
+        rgba(255,255,255,0.08)
+    );
+
+    backdrop-filter: blur(var(--blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(180%);
+
+    border: 1px solid var(--glass-border);
+
+    border-radius: var(--radius-xl);
+
+    box-shadow: var(--shadow-soft);
+
+    padding: 24px;
+    margin-bottom: 22px;
+
+    transition: var(--transition);
+}
+
+/* Reflexo superior */
+.glass-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.30) 0%,
+            rgba(255,255,255,0.06) 20%,
+            transparent 45%
+        );
+
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+/* Reflexo diagonal animado */
+.glass-card::after {
+    content: "";
+    position: absolute;
+    top: -120%;
+    left: -60%;
+    width: 200%;
+    height: 220%;
+
+    background: linear-gradient(
+        120deg,
+        transparent 30%,
+        rgba(255,255,255,0.10) 45%,
+        rgba(255,255,255,0.22) 50%,
+        rgba(255,255,255,0.08) 55%,
+        transparent 70%
+    );
+
+    transform: rotate(12deg);
+    transition: 1s ease;
+    pointer-events: none;
+}
+
+.glass-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(255,255,255,0.28);
+}
+
+.glass-card:hover::after {
+    transform: rotate(12deg) translateX(20%);
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    text-align: center;
+    margin-bottom: 28px;
+    position: relative;
+}
+
+.brand-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px 18px;
+
+    border-radius: 999px;
+
+    background: rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255,255,255,0.16);
+
+    color: rgba(255,255,255,0.82);
+
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    margin-bottom: 18px;
+
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.16),
+        0 4px 18px rgba(0,0,0,0.12);
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+
+    background: linear-gradient(
+        180deg,
+        #ffffff,
+        rgba(255,255,255,0.72)
+    );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle { opacity: 0.8; font-weight: 300; } .subtitle-header{ font-size: 0.9rem; opacity: 0.8; font-weight: 400; }
+
+/* =========================
+   GRID
+========================= */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+    gap: 18px;
+}
+
+/* =========================
+   INSIGHT CARD
+========================= */
+
+.aurea-insight {
+    border-left: 1px solid rgba(255,255,255,0.18);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.14),
+            rgba(255,255,255,0.05)
+        );
+}
+
+/* =========================
+   CHAT BUTTON
+========================= */
+
+#chat-trigger {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+
+    width: 68px;
+    height: 68px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.30),
+            rgba(255,255,255,0.08)
+        );
+
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+
+    border: 1px solid rgba(255,255,255,0.20);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+    font-size: 24px;
+
+    cursor: pointer;
+
+    z-index: 9999;
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.24),
+        inset 0 1px 1px rgba(255,255,255,0.18);
+
+    transition: var(--transition);
+}
+
+#chat-trigger:hover {
+    transform: scale(1.08);
+    box-shadow:
+        0 18px 60px rgba(0,0,0,0.32),
+        inset 0 1px 1px rgba(255,255,255,0.25);
+}
+
+/* =========================
+   CHAT WINDOW
+========================= */
+
+.chat-window {
+    position: fixed;
+
+    bottom: 110px;
+    right: 24px;
+
+    width: 360px;
+    height: 560px;
+
+    display: none;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.12),
+            rgba(255,255,255,0.06)
+        );
+
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+
+    border: 1px solid rgba(255,255,255,0.18);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.35),
+        inset 0 1px 1px rgba(255,255,255,0.12);
+
+    z-index: 9999;
+}
+
+/* brilho topo */
+.chat-window::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            160deg,
+            rgba(255,255,255,0.22),
+            transparent 25%
+        );
+
+    pointer-events: none;
+}
+
+/* =========================
+   CHAT HEADER
+========================= */
+
+.chat-header {
+    padding: 18px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.12),
+            rgba(255,255,255,0.04)
+        );
+
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+
+    color: white;
+
+    backdrop-filter: blur(12px);
+}
+
+.chat-header span {
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
 .chat-header span:hover {
     opacity: 1;
-    transform: scale(1.1);
-    transition: all 0.2s;
+    transform: scale(1.12);
 }
 
-/* Garante que o header distribua o título e os botões */
-.chat-header {
+/* =========================
+   CHAT BODY
+========================= */
+
+.chat-body {
+    flex: 1;
+
+    padding: 18px;
+
+    overflow-y: auto;
+
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
+    flex-direction: column;
+    gap: 12px;
 }
-        .chat-body {
-            flex: 1;
-            padding: 12px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .msg {
-            padding: 10px 14px;
-            border-radius: 16px;
-            font-size: 0.9rem;
-            max-width: 80%;
-        }
-        .msg.aurea {
-            background: rgba(255, 255, 255, 0.301);
-            backdrop-filter: blur(6px);
-            font-size: 0.9rem;
-        }
-        .msg.user {
-            background: var(--secondary);
-            color: white;
-            align-self: flex-end;
-            font-size: 0.9rem;
-        }
-        .chat-input {
-            display: flex;
-            padding: 10px;
-            gap: 8px;
-            background: rgba(0,0,0,0.1);
-            border-radius: 0 0 24px 24px;
-        }
-        .chat-input input {
-            flex: 1;
-            border-radius: 16px;
-            border: none;
-            padding: 15px;
-            outline: none;
-            font-size: 1rem;
-        }
-        .chat-input button {
-            width: 50px;
-            border-radius: 50%;
-            border: none;
-            background: var(--primary);
-            color: white;
-            cursor: pointer;
-        }
-        #loader {
-            position: fixed; 
-            inset: 0; 
-            background: #fdfdfd url("fundo09.png") center; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 1000; 
-            transition: opacity 0.6s ease, visibility 0.6s ease; 
-        }
-        .spinner { 
-            width: 45px; 
-            height: 45px; 
-            border: 4px solid rgba(255, 111, 183, 0.15); 
-            border-left-color: #ff6fb7; 
-            border-radius: 50%; 
-            animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite; 
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loader-text {
-            margin-top: 24px; 
-            font-weight: 400; 
-            letter-spacing: 3px; 
-            font-size: 0.9rem;
-            color: #64748b;
-            text-transform: uppercase;
-        }
-        @media (max-width:600px){
-            .chat-window{
-                width: calc(100vw - 30px);
-                right: 15px;
-            }
-        }
-        .footer { margin-top: 50px; text-align: center; padding-bottom: 25px;}
-        .footer p { font-size: 0.8rem; color: #ffffff; font-weight: 300; line-height: 1.6; }
-        .footer-logo { 
-            width: 45px; 
-            height: 45px; 
-            background: url('logo_acalantobebe1.png') center/contain no-repeat; 
-            margin: 18px auto 0; 
-            opacity: 1; 
-            filter: grayscale(100%); 
-            transition: all 0.4s ease; 
-        }
-        .footer:hover .footer-logo { 
-            filter: grayscale(100%); 
-            opacity: 1; 
-            transform: scale(1.05);
-        }
-        .relatorio-item {
-            margin-bottom: 8px;
-            padding: 6px 0;
-            border-bottom: 1px dashed rgba(255,255,255,0.2);
-        }
-      /* Container das bolinhas */
+
+/* =========================
+   MESSAGES
+========================= */
+
+.msg {
+    position: relative;
+
+    max-width: 82%;
+
+    padding: 14px 16px;
+
+    border-radius: 22px;
+
+    font-size: 0.92rem;
+    line-height: 1.5;
+
+    backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    transition: var(--transition);
+}
+
+/* IA */
+.msg.aurea {
+    align-self: flex-start;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.14),
+            rgba(255,255,255,0.06)
+        );
+
+    color: rgba(255,255,255,0.92);
+
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.12),
+        0 4px 18px rgba(0,0,0,0.14);
+}
+
+/* USER */
+.msg.user {
+    align-self: flex-end;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.28),
+            rgba(255,255,255,0.12)
+        );
+
+    color: white;
+
+    box-shadow:
+        0 6px 24px rgba(0,0,0,0.18);
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.chat-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.04)
+        );
+
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.chat-input input {
+    flex: 1;
+
+    border: none;
+    outline: none;
+
+    padding: 16px 18px;
+
+    border-radius: 999px;
+
+    color: white;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255,255,255,0.10);
+
+    font-size: 0.92rem;
+
+    transition: var(--transition);
+}
+
+.chat-input input::placeholder {
+    color: rgba(255,255,255,0.45);
+}
+
+.chat-input input:focus {
+    border-color: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.12);
+}
+
+.chat-input button {
+    width: 52px;
+    height: 52px;
+
+    border: none;
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.22),
+            rgba(255,255,255,0.10)
+        );
+
+    backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255,255,255,0.18);
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,0.16);
+
+    transition: var(--transition);
+}
+
+.chat-input button:hover {
+    transform: scale(1.08);
+}
+
+/* =========================
+   LOADER
+========================= */
+
+#loader {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0f172a,
+            #111827
+        );
+
+    z-index: 10000;
+
+    transition:
+        opacity 0.6s ease,
+        visibility 0.6s ease;
+}
+
+.spinner {
+    width: 54px;
+    height: 54px;
+
+    border-radius: 50%;
+
+    border: 3px solid rgba(255,255,255,0.10);
+    border-top-color: rgba(255,255,255,0.85);
+
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loader-text {
+    margin-top: 22px;
+
+    color: rgba(255,255,255,0.75);
+
+    letter-spacing: 4px;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+}
+
+/* =========================
+   TYPING DOTS
+========================= */
+
 .typing-dots {
     display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 10px;
+    gap: 5px;
+    padding: 8px 2px;
 }
 
-/* Estilo individual de cada bolinha */
 .typing-dots span {
     width: 8px;
     height: 8px;
-    background-color: #9b51e0; /* Cor temática de IA (Roxo/Aurea) */
+
     border-radius: 50%;
-    display: inline-block;
-    animation: pulse 1.4s infinite ease-in-out both;
+
+    background: rgba(255,255,255,0.75);
+
+    animation: pulse 1.4s infinite ease-in-out;
 }
 
-/* Delay para criar o efeito de onda */
-.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+.typing-dots span:nth-child(1) {
+    animation-delay: -0.32s;
+}
 
-/* Keyframes da animação */
+.typing-dots span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
 @keyframes pulse {
-    0%, 80%, 100% { 
-        transform: scale(0);
+    0%, 80%, 100% {
+        transform: scale(0.4);
         opacity: 0.3;
-    } 
-    40% { 
-        transform: scale(1.0);
+    }
+
+    40% {
+        transform: scale(1);
         opacity: 1;
+    }
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+    margin-top: 60px;
+    text-align: center;
+    padding-bottom: 30px;
+}
+
+.footer p {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.8;
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.18);
+    border-radius: 999px;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 16px;
+    }
+
+    .chat-window {
+        width: calc(100vw - 20px);
+        height: 85vh;
+
+        right: 10px;
+        bottom: 90px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .glass-card {
+        padding: 20px;
     }
 }
