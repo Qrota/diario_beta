@@ -40,7 +40,7 @@
             padding: 20px;
         }
         .glass-card {
-            background: var(--bg);
+            background: #f7f5f1;
             backdrop-filter: blur(var(--blur)) saturate(0%);
             -webkit-backdrop-filter: blur(var(--blur)) saturate(0%);
             border-radius: 24px;
