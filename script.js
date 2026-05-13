@@ -21,7 +21,7 @@ function entrarFullscreen() {
     // ==========================
     // 🌐 CONFIG API
     // ==========================
-    const API = "https://script.google.com/macros/s/AKfycbyMSMpoJygEWfcd4TNhWr812KOHGsYmtf724hCJNsmRIUBYIBY_01PNTQ5wFEstUywm/exec";
+    const API = "https://script.google.com/macros/s/AKfycbzRN-ksLk_gaXzKxMp3mK4L_SDEpDRNmEYRjjHU5BL1Zo1cQYLw5CnbUmubI4E-xgjY/exec";
     let dadosOriginais = [];
     let frasesIA = {
         amamentacao: { critico: ["Nenhuma mamada registrada neste período. Verifique se esqueceu de anotar.",
@@ -434,6 +434,7 @@ IMPORTANTE:
 - Seja elegante, moderna e calorosa.
 `;
 
+
     try {
 
         // 🧠 MEMÓRIA DAS ÚLTIMAS MENSAGENS
@@ -633,10 +634,10 @@ async function sendMessage() {
             if (obs.includes("regurg")) ind.r++;
         });
         gerarIA(ind);
-        updateChart('m', 'chartMamada', 'Mamadas', dias, '#ff477e');
-        updateChart('s', 'chartSono', 'Sono', dias, '#3b82f6');
-        updateChart('f', 'chartFralda', 'Fraldas', dias, '#10b981');
-        updateChart('d', 'chartMed', 'Medicação', dias, '#8b5cf6');
+        updateChart('m', 'chartMamada', 'Mamadas', dias, '#fcc6cd');
+        updateChart('s', 'chartSono', 'Sono', dias, '#abdfee');
+        updateChart('f', 'chartFralda', 'Fraldas', dias, '#93d8ad');
+        updateChart('d', 'chartMed', 'Medicação', dias, '#af9bdd');
     }
 
     function gerarIA(ind) {
