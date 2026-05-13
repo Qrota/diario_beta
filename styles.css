@@ -1,32 +1,24 @@
   :root {
             /* === VARIÁVEIS DIA === */
             --primary: #ff8fab;
-            --secondary: #8093f1;
-            --glass-bg: rgba(255, 255, 255, 0.75);
+            --secondary: #cff4ff;
+            --glass-bg: rgb(247, 245, 241);
             --glass-border: rgba(255, 255, 255, 0.45);
             --text-main: #1f2937;
             --text-light: #1a1919;
             --blur: 18px;
-            --bg-gradient: radial-gradient(circle at 20% 20%, #f8c6cc 0%, transparent 50%),
-                          radial-gradient(circle at 80% 10%, #acbcfa 0%, transparent 50%),
-                          radial-gradient(circle at 50% 100%, #f0b5d6 0%, transparent 60%),
-                          #e0f2fe;
-        }
+            background: linear-gradient(
+    to bottom,
+    #f6cfd4 0%,
+    #f6cfd4 11%,
+    #d7e6ea 0%,
+    #d7e6ea 10%,
+    #f7f2e9 18%,
+    #f7f2e9 100%
+);
+  }
 
-        .night {
-            /* === VARIÁVEIS NOITE === */
-            --primary: #f472b6;
-            --secondary: #a5b4fc;
-            --glass-bg: rgba(15, 23, 42, 0.65);
-            --glass-border: rgba(148, 163, 184, 0.25);
-            --text-main: #e2e8f0;
-            --text-light: #f1f5f9;
-            --blur: 20px;
-            --bg-gradient: radial-gradient(circle at 20% 30%, #1e2937 0%, transparent 50%),
-                          radial-gradient(circle at 80% 20%, #221da7 0%, transparent 50%),
-                          radial-gradient(circle at 50% 100%, #532597 0%, transparent 60%),
-                          #0f172a;
-        }
+        
 
         * {
             box-sizing: border-box;
@@ -48,103 +40,52 @@
             padding: 20px;
         }
         .glass-card {
-    position: relative;
-    overflow: hidden;
-
-    background: linear-gradient(
-        145deg,
-        rgba(255,255,255,0.14),
-        rgba(255,255,255,0.08)
-    );
-
-    backdrop-filter: blur(var(--blur)) saturate(180%);
-    -webkit-backdrop-filter: blur(var(--blur)) saturate(180%);
-
-    border: 1px solid var(--glass-border);
-
-    border-radius: 14px;
-
-    box-shadow: var(--shadow-soft);
-
-    padding: 24px;
-    margin-bottom: 22px;
-
-    transition: var(--transition);
-}
-
-/* Reflexo superior */
-.glass-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,0.30) 0%,
-            rgba(255,255,255,0.06) 20%,
-            transparent 45%
-        );
-
-    opacity: 0.9;
-    pointer-events: none;
-}
-
-/* Reflexo diagonal animado */
-.glass-card::after {
-    content: "";
-    position: absolute;
-    top: -120%;
-    left: -60%;
-    width: 200%;
-    height: 220%;
-
-    background: linear-gradient(
-        120deg,
-        transparent 30%,
-        rgba(255,255,255,0.10) 45%,
-        rgba(255,255,255,0.22) 50%,
-        rgba(255,255,255,0.08) 55%,
-        transparent 70%
-    );
-
-    transform: rotate(12deg);
-    transition: 1s ease;
-    pointer-events: none;
-}
-
-.glass-card:hover {
-    transform: translateY(-6px) scale(1.01);
-    box-shadow: var(--shadow-hover);
-    border-color: rgba(255,255,255,0.28);
-}
-.glass-card:hover::after {
-    transform: rotate(12deg) translateX(20%);
-}
-
-
-        aurea-insight {
-    border-left: 1px solid rgba(255,255,255,0.18);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,0.14),
-            rgba(255,255,255,0.05)
-        );
-}
+            background: var(--bg);
+            backdrop-filter: blur(var(--blur)) saturate(0%);
+            -webkit-backdrop-filter: blur(var(--blur)) saturate(0%);
+            border-radius: 24px;
+            border: 1px solid #ffffff;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.4s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-1px);
+        }
+        .aurea-insight {
+            background: rgb(247, 245, 241);
+            border-left: 5px solid #f6cfd4;
+        }
         header {
             text-align: center;
             color: var(--text-light);
             margin-bottom: 20px;
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
+        .header-title{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:19px;
+    margin-top:1px;
+}
+
+.baby-icon{
+    width:38px;
+    height:38px;
+    object-fit:contain;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.12));
+}
+
+.header-title h1{
+    margin:0;
+}
         .brand-badge {
             display: inline-block;
             padding: 6px 14px;
             border-radius: 50px;
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.356);
             backdrop-filter: blur(10px);
             font-size: 0.7rem;
             letter-spacing: 2px;
@@ -175,130 +116,49 @@
             height: 180px;
         }
         #chat-trigger {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-
-    width: 68px;
-    height: 68px;
-
-    border-radius: 50%;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,0.30),
-            rgba(255,255,255,0.08)
-        );
-
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-
-    border: 1px solid rgba(255,255,255,0.20);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    color: white;
-    font-size: 24px;
-
-    cursor: pointer;
-
-    z-index: 9999;
-
-    box-shadow:
-        0 10px 40px rgba(0,0,0,0.24),
-        inset 0 1px 1px rgba(255,255,255,0.18);
-
-    transition: var(--transition);
-}
-#chat-trigger:hover {
-    transform: scale(1.08);
-    box-shadow:
-        0 18px 60px rgba(0,0,0,0.32),
-        inset 0 1px 1px rgba(255,255,255,0.25);
-}
-
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background:  #f6cfd4;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            
+            z-index: 9999;
+        }
         .chat-window {
-    position: fixed;
-
-    bottom: 110px;
-    right: 24px;
-
-    width: 360px;
-    height: 560px;
-
-    display: none;
-    flex-direction: column;
-
-    overflow: hidden;
-
-    border-radius: 14px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,0.12),
-            rgba(255,255,255,0.06)
-        );
-
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-
-    border: 1px solid rgba(255,255,255,0.18);
-
-    box-shadow:
-        0 30px 80px rgba(0,0,0,0.35),
-        inset 0 1px 1px rgba(255,255,255,0.12);
-
-    z-index: 9999;
-}
-
-/* brilho topo */
-.chat-window::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-
-    background:
-        linear-gradient(
-            160deg,
-            rgba(255,255,255,0.22),
-            transparent 25%
-        );
-
-    pointer-events: none;
-}
+            position: fixed;
+            bottom: 100px;
+            right: 25px;
+            width: 340px;
+            height: 500px;
+            display: none;
+            flex-direction: column;
+            border-radius: 16px;
+            background: url("imagens/fundo_x.png");
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.25);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            z-index: 9999;
+        }
         .chat-header {
-    padding: 18px 20px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(200, 117, 248, 0.22),
-            rgba(245, 91, 124, 0.356)
-        );
-
-    border-bottom: 1px solid rgba(255,255,255,0.10);
-
-    color: white;
-
-    backdrop-filter: blur(12px);
-}
-
-.chat-header span {
-    cursor: pointer;
-    transition: 0.25s ease;
-}
-
-.chat-header span:hover {
+            padding: 16px;
+            color: white;
+            background: linear-gradient(135deg, #f7bdc5, #c3e8fa);
+            display: flex;
+            justify-content: space-between;
+            border-radius: 24px 24px 0 0;
+        }
+        .chat-header span:hover {
     opacity: 1;
-    transform: scale(1.12);
+    transform: scale(1.1);
+    transition: all 0.2s;
 }
 
 /* Garante que o header distribua o título e os botões */
@@ -309,16 +169,13 @@
     padding: 10px 15px;
 }
         .chat-body {
-    flex: 1;
-
-    padding: 18px;
-
-    overflow-y: auto;
-
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
         .msg {
             padding: 10px 14px;
             border-radius: 16px;
@@ -326,7 +183,7 @@
             max-width: 80%;
         }
         .msg.aurea {
-            background: rgba(255, 255, 255, 0.301);
+            background: rgb(255, 255, 255);
             backdrop-filter: blur(6px);
             font-size: 0.9rem;
         }
@@ -345,47 +202,24 @@
         }
         .chat-input input {
             flex: 1;
-            border-radius: 14px;
+            border-radius: 16px;
             border: none;
             padding: 15px;
             outline: none;
             font-size: 0.9rem;
         }
         .chat-input button {
-    width: 52px;
-    height: 52px;
-
-    border: none;
-    border-radius: 50%;
-
-    cursor: pointer;
-
-    color: white;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(248, 117, 149, 0.22),
-            rgba(245, 91, 124, 0.356)
-        );
-
-    backdrop-filter: blur(14px);
-
-    border: 1px solid rgba(255,255,255,0.18);
-
-    box-shadow:
-        0 8px 24px rgba(0,0,0,0.16);
-
-    transition: var(--transition);
-}
-
-.chat-input button:hover {
-    transform: scale(1.08);
-}
+            width: 50px;
+            border-radius: 50%;
+            border: none;
+            background: #f7bdc5;
+            color: white;
+            cursor: pointer;
+        }
         #loader {
             position: fixed; 
             inset: 0; 
-            background: #fcfcfc url("fundo_x.png") center; 
+            background: #fcfcfc url("imagens/fundo_x.png") center; 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
@@ -397,7 +231,7 @@
             width: 45px; 
             height: 45px; 
             border: 4px solid rgba(255, 111, 183, 0.15); 
-            border-left-color: #ff6fb7; 
+            border-left-color: #fcc7d0; 
             border-radius: 50%; 
             animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite; 
         }
@@ -416,12 +250,57 @@
                 right: 15px;
             }
         }
+        /* =========================
+   ÍCONES ESTILO APP DA IMAGEM
+========================= */
+
+.glass-card h3{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-size:1.25rem;
+    font-weight:700;
+    color:#2f2a28;
+}
+
+/* círculo */
+.icon-circle{
+    width:38px;
+    height:38px;
+    min-width:38px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:
+        0 6px 18px rgba(0,0,0,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+/* azul claro */
+.icon-blue{
+    background:#dff1f8;
+}
+
+/* rosa claro */
+.icon-pink{
+    background:#f9dfe5;
+}
+
+/* imagem interna */
+.icon-circle img{
+    width:20px;
+    height:20px;
+    object-fit:contain;
+    opacity:0.92;
+}
+        
         .footer { margin-top: 50px; text-align: center; padding-bottom: 25px;}
-        .footer p { font-size: 0.8rem; color: #ffffff; font-weight: 300; line-height: 1.6; }
+        .footer p { font-size: 0.8rem; color: #545555; font-weight: 300; line-height: 1.6; }
         .footer-logo { 
             width: 45px; 
             height: 45px; 
-            background: url('logo_acalantobebe1.png') center/contain no-repeat; 
+            background: url('imagens/logo_acalantobebe1.png') center/contain no-repeat; 
             margin: 18px auto 0; 
             opacity: 0.9; 
             filter: grayscale(100%); 
