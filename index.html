@@ -48,10 +48,22 @@
 
 <div class="container" id="app-content" style="opacity: 0; visibility: hidden; transition: opacity 0.5s ease;">
     <header>
-        <span class="brand-badge">Acalanto Bebê</span>
+    <span class="brand-badge">Acalanto Bebê Premium</span>
+
+    <div class="header-title">
+        <img 
+            src="elefantinho.png" 
+            alt="Ícone bebê"
+            class="baby-icon"
+        >
+
         <h1>Diário do Gabriel</h1>
-        <p class="subtitle-header">Monitoramento inteligente com análises de IA em tempo real</p>
-    </header>
+    </div>
+
+    <p class="subtitle-header">
+        Monitoramento inteligente com análises de IA em tempo real
+    </p>
+</header>
 
     <div class="glass-card" style="padding: 15px 24px; display: flex; align-items: center; justify-content: space-between;">
         <span style="font-weight: 600; font-size: 0.9rem;">Período:</span>
@@ -73,27 +85,64 @@
         </div>
     </div>
 
-    <div class="grid">
-        <div class="glass-card card-mamada">
-            <h3><span style="font-size: 1.2rem;">🍼</span> Nutrição</h3>
-            <div class="chart-container"><canvas id="chartMamada"></canvas></div>
-        </div>
-        <div class="glass-card card-sono">
-            <h3><span style="font-size: 1.2rem;">😴</span> Descanso</h3>
-            <div class="chart-container"><canvas id="chartSono"></canvas></div>
-        </div>
-        <div class="glass-card card-fralda">
-            <h3><span style="font-size: 1.2rem;">🧷</span> Fraldas</h3>
-            <div class="chart-container"><canvas id="chartFralda"></canvas></div>
-        </div>
-        <div class="glass-card card-med">
-            <h3><span style="font-size: 1.2rem;">💊</span> Saúde</h3>
-            <div class="chart-container"><canvas id="chartMed"></canvas></div>
+ <div class="grid">
+
+    <div class="glass-card card-mamada">
+        <h3>
+            <span class="icon-circle icon-blue">
+                <img src="mamadeira.png" alt="Ícone mamadeira">
+            </span>
+            Nutrição
+        </h3>
+
+        <div class="chart-container">
+            <canvas id="chartMamada"></canvas>
         </div>
     </div>
 
+    <div class="glass-card card-sono">
+        <h3>
+            <span class="icon-circle icon-pink">
+                <img src="lua-crescente.png" alt="Ícone lua">
+            </span>
+            Descanso
+        </h3>
+
+        <div class="chart-container">
+            <canvas id="chartSono"></canvas>
+        </div>
+    </div>
+
+    <div class="glass-card card-fralda">
+        <h3>
+            <span class="icon-circle icon-blue">
+                <img src="fralda.png" alt="Ícone fralda">
+            </span>
+            Fraldas
+        </h3>
+
+        <div class="chart-container">
+            <canvas id="chartFralda"></canvas>
+        </div>
+    </div>
+
+    <div class="glass-card card-med">
+        <h3>
+            <span class="icon-circle icon-pink">
+                <img src="pilulas.png" alt="Ícone pilulas">
+            </span>
+            Saúde
+        </h3>
+
+        <div class="chart-container">
+            <canvas id="chartMed"></canvas>
+        </div>
+    </div>
+
+</div>
+
     <footer class="footer">
-        <p>Acalanto Bebê Premium</p>
+        <p>Acalanto Bebê </p>
         <p>Desenvolvido com ❤️ e IA avançada</p>
         <div class="footer-logo"></div>
     </footer>
