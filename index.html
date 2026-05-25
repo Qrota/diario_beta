@@ -201,18 +201,85 @@ input:focus{
 .remember-me{
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:12px;
 
-    margin-top:5px;
-    margin-bottom:25px;
+    cursor:pointer;
 
-    color:#5b5262;
+    user-select:none;
 
-    font-size:.95rem;
+    font-size:.96rem;
+    font-weight:500;
+    color:#4b4254;
+
+    margin:8px 0 24px;
 }
 
+/* Esconde checkbox padrão */
 .remember-me input{
-    width:auto;
+    display:none;
+}
+
+/* Caixa personalizada */
+.custom-check{
+    width:22px;
+    height:22px;
+
+    border-radius:7px;
+
+    border:2px solid #e6cfd7;
+
+    background:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    transition:.25s ease;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* Ícone */
+.custom-check i{
+    font-size:.72rem;
+
+    color:white;
+
+    opacity:0;
+
+    transform:scale(.5);
+
+    transition:.2s ease;
+}
+
+/* Quando marcado */
+.remember-me input:checked + .custom-check{
+    background:linear-gradient(
+        135deg,
+        #fd8aa0,
+        #f56f8a
+    );
+
+    border-color:#fd8aa0;
+
+    box-shadow:
+    0 4px 12px rgba(253,138,160,0.28);
+}
+
+.remember-me input:checked + .custom-check i{
+    opacity:1;
+    transform:scale(1);
+}
+
+/* Hover */
+.remember-me:hover .custom-check{
+    border-color:#fd8aa0;
+    transform:translateY(-1px);
+}
+
+.remember-text{
+    letter-spacing:.2px;
 }
 
 /* ================= BUTTON ================= */
@@ -389,9 +456,16 @@ footer{
                 </div>
 
                 <label class="remember-me">
-                    <input type="checkbox" id="remember">
-                    Lembrar de mim
-                </label>
+    <input type="checkbox" id="remember">
+
+    <span class="custom-check">
+        <i class="fas fa-check"></i>
+    </span>
+
+    <span class="remember-text">
+        Lembrar de mim
+    </span>
+</label>
 
                 <button type="submit" id="btnLogin">
                     <i class="fas fa-sign-in-alt"></i>
