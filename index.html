@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Acalanto Bebê • Entrar</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    font-family:'Inter',sans-serif;
+    
+
+    background: linear-gradient(
+    to bottom,
+    #fcc8cf 0%,
+    #fcc8cf 11%,
+    #c1e6f0 0%,
+    #b8dee9 10%,
+    #f7eddb 18%,
+    #fcf3e3 100%
+);
+
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+
+    display:flex;
+    flex-direction:column;
+}
+
+/* ================= MAIN ================= */
+
+main{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+}
+
+/* ================= CARD ================= */
+
+.main-wrapper{
+    width:100%;
+    max-width:1100px;
+
+    display:flex;
+    overflow:hidden;
+
+    border-radius:28px;
+
+    background:rgba(255,255,255,0.22);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,0.4);
+
+    box-shadow:
+    0 25px 60px rgba(0,0,0,0.20);
+}
+
+/* ================= LEFT ================= */
+
+.info-container{
+    flex:1;
+
+    padding:70px 55px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
+    background:
+    linear-gradient(
+    135deg,
+    rgba(253,138,160,0.14),
+    rgba(168,216,224,0.14)
+    );
+}
+
+.logo{
+    margin-bottom:10px;
+}
+
+.logo img{
+    height:56px;
+}
+
+.info-container h1{
+    font-family:'Playfair Display',serif;
+
+    font-size:clamp(2.4rem,4vw,3.2rem);
+
+    color:#777677;
+
+    margin-bottom:20px;
+
+    line-height:1.1;
+}
+
+.info-container p{
+    font-size:0.7rem;
+    line-height:1.1;
+    color:#4e4456;
+    max-width:420px;
+}
+
+/* ================= RIGHT ================= */
+
+.form-container{
+    flex:1;
+
+    padding:70px 55px;
+
+    background:rgba(255, 255, 255, 0.473);
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.form-container h2{
+    text-align:center;
+    align-items:center;
+    justify-content:center;
+    gap:19px;
+    margin-top:-32px;
+    color:#636262;
+    margin-bottom:50px;
+    font-size:1.6rem;
+    font-weight: 400;
+}
+.baby-icon{
+    width:38px;
+    height:38px;
+    object-fit:contain;
+    filter: drop-shadow(0 4px 10px rgb(167, 232, 252));
+}
+
+
+/* ================= INPUTS ================= */
+
+.form-group{
+    margin-bottom:22px;
+}
+
+label{
+    display:block;
+
+    margin-bottom:8px;
+
+    color:#a7a7a7;
+
+    font-weight:600;
+}
+
+input{
+    width:100%;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    border:1.5px solid #e7dfe5;
+
+    font-size:1rem;
+
+    background:white;
+
+    transition:.3s;
+}
+
+input:focus{
+    outline:none;
+
+    border-color:#fd8aa0;
+
+    box-shadow:
+    0 0 0 5px rgba(253,138,160,0.15);
+}
+
+/* ================= CHECKBOX ================= */
+
+.remember-me{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    margin-top:5px;
+    margin-bottom:25px;
+
+    color:#5b5262;
+
+    font-size:.95rem;
+}
+
+.remember-me input{
+    width:auto;
+}
+
+/* ================= BUTTON ================= */
+
+button{
+    width:100%;
+
+    border:none;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:
+    linear-gradient(
+    135deg,
+    #8af5fd,
+    #6fe1f5
+    );
+
+    color:white;
+
+    font-size:1rem;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+
+    box-shadow:
+    0 12px 25px rgba(253,138,160,0.35);
+}
+
+/* ================= MESSAGE ================= */
+
+.message{
+    margin-top:20px;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    text-align:center;
+
+    font-size:.95rem;
+}
+
+.success{
+    background:#e6f9f0;
+    color:#006d32;
+}
+
+.error{
+    background:#ffebee;
+    color:#c62828;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+    text-align:center;
+
+    padding:18px;
+
+    color:white;
+
+    font-size:.78rem;
+}
+
+/* ================= RESPONSIVO ================= */
+
+@media(max-width:900px){
+
+    .main-wrapper{
+        flex-direction:column;
+    }
+
+    .info-container,
+    .form-container{
+        padding:50px 30px;
+    }
+
+    .info-container{
+        text-align:center;
+        align-items:center;
+    }
+
+    .info-container p{
+        max-width:100%;
+    }
+}
+
+@media(max-width:480px){
+
+    main{
+        padding:20px 14px;
+    }
+
+    .info-container,
+    .form-container{
+        padding:40px 24px;
+    }
+
+    .info-container h1{
+        font-size:2.2rem;
+    }
+
+    .form-container h2{
+        font-size:1.5rem;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<main>
+
+    <div class="main-wrapper">
+
+        <!-- LADO ESQUERDO -->
+        <div class="info-container">
+
+            <div class="logo">
+                <img src="imagens/logo_acalantobebe1.png" alt="Logo">
+            </div>
+
+            <h1>Acalanto Bebê</h1>
+
+            <p>
+                Entre carinho, acolhimento e cuidado,
+                nasce o verdadeiro
+                <strong>Acalanto.</strong>
+            </p>
+
+        </div>
+
+        <!-- LADO DIREITO -->
+        <div class="form-container">
+            <div class="header-title">
+        <img 
+            src="imagens/elefantinho.png" 
+            alt="Ícone bebê"
+            class="baby-icon"
+        >
+
+            <h2>Diário do Gabriel</h2>
+
+            <form id="loginForm">
+
+                <div class="form-group">
+                    <label for="usuario">E-mail ou Usuário</label>
+
+                    <input
+                        type="text"
+                        id="usuario"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+
+                    <input
+                        type="password"
+                        id="senha"
+                        required
+                    >
+                </div>
+
+                <label class="remember-me">
+                    <input type="checkbox" id="remember">
+                    Lembrar de mim
+                </label>
+
+                <button type="submit" id="btnLogin">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Entrar
+                </button>
+
+            </form>
+
+            <div id="message" class="message"></div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<footer>
+    <p>© 2026 Acalanto Bebê. Todos os direitos reservados.</p>
+</footer>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzLRP4mT3E8HVNS4Aa-VG6AGgE5LtezZ0A0JmRS9s43dGm3vfRz0g1pRtIU7yRjVQZ6/exec";
+
+const REDIRECT_URL = "diario.html";
+
+const loginForm = document.getElementById('loginForm');
+const btnLogin = document.getElementById('btnLogin');
+const messageDiv = document.getElementById('message');
+
+window.onload = () => {
+
+    const savedUser =
+    localStorage.getItem('usuario_logado');
+
+    if(savedUser){
+        document.getElementById('usuario').value = savedUser;
+        document.getElementById('remember').checked = true;
+    }
+};
+
+loginForm.addEventListener('submit', async (e) => {
+
+    e.preventDefault();
+
+    const usuario =
+    document.getElementById('usuario').value;
+
+    const senha =
+    document.getElementById('senha').value;
+
+    const remember =
+    document.getElementById('remember').checked;
+
+    messageDiv.textContent =
+    "Verificando credenciais...";
+
+    messageDiv.className = "message";
+
+    btnLogin.disabled = true;
+
+    try{
+
+        const response = await fetch(API_URL,{
+            method:'POST',
+
+            body:JSON.stringify({
+                acao:"login",
+                usuario,
+                senha
+            }),
+
+            headers:{
+                'Content-Type':'text/plain;charset=utf-8'
+            }
+        });
+
+        const result = await response.json();
+
+        if(result.sucesso){
+
+            messageDiv.textContent =
+            "Login autorizado!";
+
+            messageDiv.classList.add('success');
+
+            if(remember){
+                localStorage.setItem(
+                    'usuario_logado',
+                    usuario
+                );
+            }else{
+                localStorage.removeItem(
+                    'usuario_logado'
+                );
+            }
+
+            setTimeout(()=>{
+                window.location.href =
+                REDIRECT_URL;
+            },1000);
+
+        }else{
+
+            messageDiv.textContent =
+            result.mensagem;
+
+            messageDiv.classList.add('error');
+        }
+
+    }catch(error){
+
+        messageDiv.textContent =
+        "Erro ao conectar com o servidor.";
+
+        messageDiv.classList.add('error');
+
+        console.error(error);
+
+    }finally{
+        btnLogin.disabled = false;
+    }
+
+});
+
+</script>
+
+</body>
+</html>
