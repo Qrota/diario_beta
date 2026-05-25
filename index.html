@@ -67,7 +67,7 @@
 
     <div class="glass-card" style="padding: 15px 24px; display: flex; align-items: center; justify-content: space-between;">
         <span style="font-weight: 600; font-size: 0.9rem;">Período:</span>
-        <select id="filtroData" onchange="aplicarFiltro()" style="background: none; border: none; font-weight: 700; color: var(--primary); outline: none; cursor: pointer;">
+        <select id="filtroData" onchange="aplicarFiltro()" style="background: none; border: none; font-weight: 700; color: #fcc8cf; outline: none; cursor: pointer;">
             <option value="todos">Todo o Histórico</option>
         </select>
     </div>
@@ -98,6 +98,7 @@
         <div class="chart-container">
             <canvas id="chartMamada"></canvas>
         </div>
+        <div class="activity-timeline" id="timelineMamada"></div>
     </div>
 
     <div class="glass-card card-sono">
@@ -111,6 +112,7 @@
         <div class="chart-container">
             <canvas id="chartSono"></canvas>
         </div>
+        <div class="activity-timeline" id="timelineSono"></div>
     </div>
 
     <div class="glass-card card-fralda">
@@ -124,6 +126,7 @@
         <div class="chart-container">
             <canvas id="chartFralda"></canvas>
         </div>
+        <div class="activity-timeline" id="timelineFralda"></div>
     </div>
 
     <div class="glass-card card-med">
@@ -137,13 +140,14 @@
         <div class="chart-container">
             <canvas id="chartMed"></canvas>
         </div>
+        <div class="activity-timeline" id="timelineMed"></div>
     </div>
 
 </div>
 
     <footer class="footer">
-        <p>AcalantoBebê©2026 </p>
-        <p>Design by Acalanto Bebê in Rio de Janeiro</p>
+        <p>Acalanto Bebê </p>
+        <p>Desenvolvido by Acalanto  Bebê in Rio de Janeiro</p>
         <div class="footer-logo"></div>
     </footer>
 </div>
