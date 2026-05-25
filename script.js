@@ -276,40 +276,54 @@ function entrarFullscreen() {
     let historicoChat = [];
     
 
+    // CORREÇÃO: Preenchimento das intents padrões voltadas para a rotina do bebê na ausência do arquivo externo
     const FALLBACK_FAQ = {
         intents: [
             {
-                
+                tag: "saudacao",
+                patterns: ["oi", "olá", "bom dia", "boa tarde", "boa noite", "ajuda"],
+                keywords: ["oi", "ola", "ajuda", "aurea"],
+                responses: [
+                    "Olá! Sou a Áurea ✨ Estou aqui para te apoiar na rotina do bebê. Como posso ajudar você hoje?",
+                    "Oi! Como estão as coisas por aí? Quer analisar o sono, as mamadas ou tirar alguma dúvida? ❤️"
+                ]
             },
             {
-                
+                tag: "amamentacao",
+                patterns: ["como amamentar", "dor ao amamentar", "tempo de mamada", "bico rachado"],
+                keywords: ["amamentar", "mama", "peito", "leite"],
+                responses: [
+                    "A amamentação é um processo de aprendizado mútuo. Garanta que a pega esteja profunda (boca bem aberta abocanhando a maior parte da aréola). Se houver dor forte, mude a posição ou consulte uma consultora de amamentação. 🍼"
+                ]
             },
             {
-                
+                tag: "sono",
+                patterns: ["bebê não dorme", "janela de sono", "soneca", "acordando muito"],
+                keywords: ["sono", "dormir", "soneca", "acorda", "noite"],
+                responses: [
+                    "O sono do bebê é muito influenciado pelas janelas de sono (tempo acordado entre as sonecas). Fique de olho nos sinais de cansaço como coçar os olhos e bocejar para evitar que ele passe da hora e fique hiperestimulado. ☀️"
+                ]
             },
             {
-                
-            },
-            {
-                
+                tag: "colica_desconforto",
+                patterns: ["cólica", "bebê chorando muito", "gases", "barriga dura"],
+                keywords: ["colica", "gases", "choro", "gases", "regurg"],
+                responses: [
+                    "Cólicas e gases são comuns devido à imaturidade do sistema digestivo. Compressas mornas na barriguinha, massagem tipo 'shantala' ou movimentos de bicicleta com as perninhas costumam aliviar bastante. Se notar regurgitação muito frequente com dor, converse com o pediatra. 💛"
+                ]
             }
         ]
     };
+
     function limparChat() {
-    if (confirm("Deseja apagar todo o histórico da conversa?")) {
-        // 1. Limpa o array de memória
-        historicoChat = [];
-        
-        // 2. Limpa a tela (corpo do chat)
-        const chatBody = document.getElementById("chatBody");
-        chatBody.innerHTML = "";
-        
-        // 3. Adiciona a mensagem de boas-vindas novamente
-        appendMsg("Bem-vinda à Áurea ✨ Cuidado, apoio e informação em um só lugar.");
-        
-        console.log("🧹 Histórico do chat apagado.");
+        if (confirm("Deseja apagar todo o histórico da conversa?")) {
+            historicoChat = [];
+            const chatBody = document.getElementById("chatBody");
+            if (chatBody) chatBody.innerHTML = "";
+            appendMsg("Bem-vinda à Áurea ✨ Cuidado, apoio e informação em um só lugar.", "aurea");
+            console.log("🧹 Histórico do chat apagado.");
+        }
     }
-}
 
     async function carregarFAQ() {
         try {
@@ -327,70 +341,60 @@ function entrarFullscreen() {
     }
 
     function normalizarTexto(texto) {
+        if (!texto) return "";
         return texto.toLowerCase()
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             .replace(/[^\w\s]/g, "");
     }
 
     function similaridade(a, b) {
-        const wordsA = a.split(/\s+/).filter(w => w.length > 2); // ignora palavras pequenas
+        const wordsA = a.split(/\s+/).filter(w => w.length > 2); 
         const wordsB = b.split(/\s+/).filter(w => w.length > 2);
-
         if (wordsB.length === 0) return 0;
-
         let score = 0;
-
         wordsA.forEach(wA => {
             wordsB.forEach(wB => {
                 if (wA === wB) {
                     score += 2;
                 } else if (wA.length > 3 && wB.length > 3 && (wA.includes(wB) || wB.includes(wA))) {
-                    score += 1; // Correspondência parcial
+                    score += 1;
                 }
             });
         });
-
         return score / wordsB.length;
     }
 
     function responderAurea(pergunta) {
         if (!baseFAQ) return null;
-
         const texto = normalizarTexto(pergunta);
         let melhorResposta = null;
         let melhorScore = 0;
 
-        // Trata possíveis inconsistências no JSON: array direto, array dentro de intents, ou categorias com intents
         let intentsArray = [];
         if (Array.isArray(baseFAQ)) {
             intentsArray = baseFAQ;
         } else if (baseFAQ.intents) {
             if (baseFAQ.intents.length > 0 && baseFAQ.intents[0].intents) {
-                // Estrutura de categorias
                 baseFAQ.intents.forEach(cat => {
                     if (cat.intents) intentsArray.push(...cat.intents);
                 });
             } else {
-                // Estrutura de intents plana
                 intentsArray = baseFAQ.intents;
             }
         }
 
         intentsArray.forEach(item => {
             let score = 0;
-            
             if (item.patterns && Array.isArray(item.patterns)) {
                 item.patterns.forEach(p => {
                     score += similaridade(texto, normalizarTexto(p)) * 5;
                 });
             }
-
             if (item.keywords && Array.isArray(item.keywords)) {
                 item.keywords.forEach(k => {
                     if (texto.includes(normalizarTexto(k))) score += 3;
                 });
             }
-
             if (score > melhorScore) {
                 melhorScore = score;
                 const respostas = item.responses || [item.response];
@@ -400,23 +404,44 @@ function entrarFullscreen() {
             }
         });
 
-        // Se a confiança for baixa, retornamos null para acionar a API do Gemini
         if (!melhorResposta || melhorScore < 2.0) {
             return null;
         }
-
         return melhorResposta;
     }
-async function consultarIAGenerativa(pergunta) {
 
-    // 🔥 URL DO SEU APPS SCRIPT
-    const URL = "https://script.google.com/macros/s/AKfycbwk5ty8T8vpqibAbETpS24ah1ZQPYLoRgBTozH1DCTwxldZtcNBMIZ2bIheePlFTIQ/exec";
+    // CORREÇÃO CRÍTICA: Função auxiliar para compilar um resumo legível dos dados da planilha para a IA consumir
+    function compilarContextoPlanilha() {
+    if (!window.dadosOriginais || window.dadosOriginais.length === 0) {
+        return "Nenhum dado registrado na planilha atualmente.";
+    }
+    
+    const ultimosRegistros = window.dadosOriginais.slice(-30); // aumentei um pouco
+    
+    let resumo = "📋 ÚLTIMOS REGISTROS DO BEBÊ (da planilha):\n\n";
+    
+    ultimosRegistros.forEach(item => {
+        const dataFmt = item.Data ? new Date(item.Data).toLocaleDateString('pt-BR') : 'Sem data';
+        const horaFmt = formatarHorario(item.Horario);
+        const atividade = item.Atividade || 'Não especificada';
+        const obs = item.Observação ? ` — ${item.Observação}` : '';
+        
+        resumo += `• ${dataFmt} ${horaFmt} → ${atividade}${obs}\n`;
+    });
+    
+    return resumo;
+}
 
-    // 🧠 PERSONALIDADE DA ÁUREA
-    const promptSistema = `
+    async function consultarIAGenerativa(pergunta) {
+        const URL = !"https://script.google.com/macros/s/AKfycbwk5ty8T8vpqibAbETpS24ah1ZQPYLoRgBTozH1DCTwxldZtcNBMIZ2bIheePlFTIQ/exec";
+
+        // CORREÇÃO: Junta os dados extraídos da planilha do bebê dentro do prompt do sistema
+        const contextoPlanilha = compilarContextoPlanilha();
+
+        const promptSistema = `
 Você é Áurea, uma IA premium especialista em maternidade, amamentação, sono infantil e desenvolvimento do bebê.
 COMPORTAMENTO:
-- Responda SEMPRE de maneira resumida, útil e acolhedora e direta.
+- Responda SEMPRE de maneira resumida, útil, acolhedora e direta.
 - Máximo de 3-8 frases por resposta.
 - Seja útil, acolhedora e empática, mas vá direto ao ponto.
 - Nunca responda de forma longa ou detalhada demais.
@@ -427,71 +452,56 @@ COMPORTAMENTO:
 - Quando o assunto for sério, sugira consultar o pediatra.
 - Todas as respostas devem ser em Português do Brasil.
 
+CONTEXTO REAL DO BEBÊ (DADOS DA PLANILHA):
+Use as informações abaixo para responder a perguntas sobre quantas vezes o bebê mamou, quando dormiu, se tomou remédio ou trocou fraldas recentemente. Se a mãe perguntar sobre o histórico ou rotina recente, baseie-se estritamente nestes dados:
+${contextoPlanilha}
+
 IMPORTANTE:
 - Nunca diga apenas "sim" ou "não".
-- Desenvolva a resposta.
+- Desenvolva a resposta utilizando o contexto acima se aplicável.
 - Não seja robótica.
 - Seja elegante, moderna e calorosa.
 `;
 
+        try {
+            const historico = historicoChat
+                .slice(-10)
+                .map(msg => ({
+                    role: msg.role,
+                    parts: [{ text: msg.text }]
+                }));
 
-    try {
+            historico.push({
+                role: "user",
+                parts: [{
+                    text: `${promptSistema}\n\nPergunta da mãe/pai: ${pergunta}`
+                }]
+            });
 
-        // 🧠 MEMÓRIA DAS ÚLTIMAS MENSAGENS
-        const historico = historicoChat
-            .slice(-10)
-            .map(msg => ({
-                role: msg.role,
-                parts: [{ text: msg.text }]
-            }));
+            const response = await fetch(URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify({
+                    contents: historico
+                })
+            });
 
-        // 👤 NOVA MENSAGEM
-        historico.push({
-            role: "user",
-            parts: [{
-                text: `${promptSistema}\n\nPergunta da mãe/pai: ${pergunta}`
-            }]
-        });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
 
-        // 🌐 REQUISIÇÃO PARA O APPS SCRIPT
-        const response = await fetch(URL, {
-            method: "POST",
+            console.log("✅ Resposta IA com contexto da planilha:", data);
 
-            // 🔥 IMPORTANTE:
-            // text/plain evita erro de CORS no Apps Script
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-
-            body: JSON.stringify({
-                contents: historico
-            })
-        });
-
-        // ❌ ERRO HTTP
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+            if (data.ok && data.text) {
+                return data.text;
+            }
+            return "Tive dificuldade para responder agora 💛";
+        } catch (error) {
+            console.error("❌ Erro IA:", error);
+            return "Erro de conexão com a IA 💛";
         }
-
-        const data = await response.json();
-
-        console.log("✅ Resposta IA:", data);
-
-        // ✅ SUCESSO
-        if (data.ok && data.text) {
-            return data.text;
-        }
-
-        // ❌ FALHA CONTROLADA
-        return "Tive dificuldade para responder agora 💛";
-
-    } catch (error) {
-
-        console.error("❌ Erro IA:", error);
-
-        return "Erro de conexão com a IA 💛";
     }
-}
 
 
     function toggleChat() {
@@ -591,109 +601,548 @@ async function sendMessage() {
     await typeWriter(msgElement, resposta);
 }
     // ==========================
-    // 📊 DADOS E GRÁFICOS
-    // ==========================
-    function updateChart(id, ctxId, label, dias, color) {
-        if (charts[id]) charts[id].destroy();
-        const canvas = document.getElementById(ctxId); if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        charts[id] = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: Object.keys(dias),
-                datasets: [{ label, data: Object.values(dias).map(d => d[id]), borderColor: color, tension: 0.4, fill: false }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-        });
+// 📊 DADOS E GRÁFICOS
+// ==========================
+
+function updateChart(id, ctxId, label, dias, color) {
+    if (charts[id]) charts[id].destroy();
+
+    const canvas = document.getElementById(ctxId);
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    charts[id] = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Object.keys(dias),
+            datasets: [{
+                label,
+                data: Object.values(dias).map(d => d[id]),
+                borderColor: color,
+                tension: 0.4,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+
+// ==========================
+// 📅 HELPERS DE DATA
+// ==========================
+
+function formatarDataBR(dataStr) {
+    if (!dataStr) return '';
+
+    const d = new Date(dataStr);
+
+    return d.toLocaleDateString('pt-BR', {
+        timeZone: 'America/Sao_Paulo'
+    });
+}
+
+function formatarDataExtensa(dataStr) {
+    if (!dataStr) return '';
+
+    const d = new Date(dataStr);
+
+    return d.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        timeZone: 'America/Sao_Paulo'
+    });
+}
+
+// ==========================
+// ⏰ HELPERS DE HORÁRIO
+// ==========================
+
+/**
+ * Extrai HH:MM de qualquer formato.
+ * CORREÇÃO: Mais robusta para diferentes formatos de entrada.
+ */
+function formatarHorario(horario) {
+    if (!horario) return '—';
+
+    const str = String(horario).trim();
+
+    // Tenta encontrar padrão HH:MM
+    let match = str.match(/(\d{1,2}):(\d{2})/);
+    
+    if (match) {
+        return `${match[1].padStart(2, '0')}:${match[2]}`;
+    }
+    
+    // Se for número tipo 22.5 (horas decimais)
+    const decimalMatch = str.match(/^(\d{1,2})[,.](\d+)$/);
+    if (decimalMatch) {
+        const horas = parseInt(decimalMatch[1]);
+        const minutos = Math.round(parseFloat(`0.${decimalMatch[2]}`) * 60);
+        return `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
     }
 
-    function popularFiltro(dados) {
-        const s = document.getElementById("filtroData");
-        s.innerHTML = '<option value="todos">Todo o Histórico</option>';
-        const datas = [...new Set(dados.map(item => new Date(item.Data).toLocaleDateString('pt-BR')))].sort((a,b) => b.split('/').reverse().join('').localeCompare(a.split('/').reverse().join('')));
-        datas.forEach(d => { const o = document.createElement("option"); o.value = d; o.textContent = d; s.appendChild(o); });
+    return '—';
+}
+
+/**
+ * Converte data + hora em timestamp confiável.
+ * CORREÇÃO: Respeita EXATAMENTE o horário registrado na planilha,
+ * sem tentar adivinhar se pertence ao dia anterior.
+ */
+function obterTimestamp(item) {
+    if (!item.Data) return 0;
+
+    const dataBase = new Date(item.Data);
+    let hora = 0, minuto = 0;
+
+    const horarioStr = formatarHorario(item.Horario);
+    
+    if (horarioStr && horarioStr !== '—') {
+        [hora, minuto] = horarioStr.split(':').map(Number);
     }
 
-    function aplicarFiltro() {
-        const v = document.getElementById("filtroData").value;
-        const f = v === "todos" ? dadosOriginais : dadosOriginais.filter(i => new Date(i.Data).toLocaleDateString('pt-BR') === v);
-        processar(f);
-    }
+    // CORREÇÃO: Usa o horário exatamente como está na planilha
+    // Exemplo: se Data é 25/05/2026 e Horario é 22:00, usa 25/05/2026 22:00
+    return new Date(
+        dataBase.getFullYear(),
+        dataBase.getMonth(),
+        dataBase.getDate(),
+        hora,
+        minuto
+    ).getTime();
+}
+// ==========================
+// 🔍 FILTROS
+// ==========================
 
-    function processar(dados) {
-        let ind = { m:0, s:0, f:0, d:0, r:0 }, dias = {};
-        dados.forEach(item => {
-            let data = new Date(item.Data).toLocaleDateString('pt-BR');
-            if (!dias[data]) dias[data] = { m:0, s:0, f:0, d:0 };
-            let at = (item.Atividade || "").toLowerCase();
-            let obs = (item.Observação || "").toLowerCase();
-            if (at.includes("amamentacao")) { ind.m++; dias[data].m++; }
-            if (at.includes("sono")) { ind.s++; dias[data].s++; }
-            if (at.includes("fralda") || at.includes("xixi") || at.includes("coco")) { ind.f++; dias[data].f++; }
-            if (at.includes("medicacao") || at.includes("remedio")) { ind.d++; dias[data].d++; }
-            if (obs.includes("regurg")) ind.r++;
-        });
-        gerarIA(ind);
-        updateChart('m', 'chartMamada', 'Mamadas', dias, '#fcc6cd');
-        updateChart('s', 'chartSono', 'Sono', dias, '#abdfee');
-        updateChart('f', 'chartFralda', 'Fraldas', dias, '#93d8ad');
-        updateChart('d', 'chartMed', 'Medicação', dias, '#af9bdd');
-    }
+function popularFiltro(dados) {
+    const s = document.getElementById("filtroData");
 
-    function gerarIA(ind) {
-        const getF = (lista) => lista[Math.floor(Math.random() * lista.length)];
-        let insights = [];
+    s.innerHTML = '<option value="todos">Todo o Histórico</option>';
 
-        // 1. ANÁLISE CRUZADA (A "Mágica" do código)
-        if (ind.m < 5 && ind.s < 3) {
-            insights.push(`<div class="relatorio-item cruzado-alerta">${getF(frasesIA.analise_cruzada.alerta_sono_alimentacao)}</div>`);
-        } else if (ind.m >= 7 && ind.s >= 5) {
-            insights.push(`<div class="relatorio-item cruzado-bom">${getF(frasesIA.analise_cruzada.bom_desenvolvimento)}</div>`);
-        } else if (ind.m > 10 && ind.r > 2) {
-            insights.push(`<div class="relatorio-item cruzado-alerta">${getF(frasesIA.analise_cruzada.alta_amamentacao_desconforto)}</div>`);
+    const datas = [
+        ...new Set(
+            dados.map(item => formatarDataBR(item.Data))
+        )
+    ].sort((a, b) => {
+        const pa = a.split('/');
+        const pb = b.split('/');
+
+        const da = new Date(`${pa[2]}-${pa[1]}-${pa[0]}`);
+        const db = new Date(`${pb[2]}-${pb[1]}-${pb[0]}`);
+
+        return db - da;
+    });
+
+    datas.forEach(d => {
+        const o = document.createElement("option");
+        o.value = d;
+        o.textContent = d;
+        s.appendChild(o);
+    });
+}
+
+function aplicarFiltro() {
+    const v = document.getElementById("filtroData").value;
+
+    const filtrados = v === "todos"
+        ? dadosOriginais
+        : dadosOriginais.filter(
+            i => formatarDataBR(i.Data) === v
+        );
+
+    processar(filtrados);
+}
+
+// ==========================
+// 📈 PROCESSAMENTO
+// ==========================
+
+function processar(dados) {
+    let ind = { m: 0, s: 0, f: 0, d: 0, r: 0 };
+    let dias = {};
+
+    dados.forEach(item => {
+        const dataKey = formatarDataBR(item.Data);
+        if (!dias[dataKey]) {
+            dias[dataKey] = { m: 0, s: 0, f: 0, d: 0 };
         }
 
-        // 2. INSIGHTS INDIVIDUAIS (Fallback caso não caia em cruzada ou complementar)
-        insights.push(`<div class="relatorio-item">🍼 ${ind.m < 5 ? getF(frasesIA.amamentacao.baixo) : getF(frasesIA.amamentacao.ideal)}</div>`);
-        insights.push(`<div class="relatorio-item">🧷 ${ind.f < 5 ? getF(frasesIA.fraldas.baixo) : getF(frasesIA.fraldas.otimo)}</div>`);
+        const atv = (item.Atividade || '').toLowerCase().trim();
+        const obs = (item.Observação || '').toLowerCase();
 
-        document.getElementById("relatorioIA").innerHTML = insights.join("");
+        // === Mamadas (inclui "amamentacao" exato da planilha) ===
+        if (atv.includes("amamenta") || atv.includes("mamar") || atv.includes("peito") || 
+            atv.includes("leite") || atv === "amamentacao") {
+            ind.m++;
+            dias[dataKey].m++;
+        }
+        // === Sono ===
+        else if (atv.includes("sono") || atv.includes("dormir") || atv.includes("soneca") || 
+                 atv.includes("acordou") || atv === "sono") {
+            ind.s++;
+            dias[dataKey].s++;
+        }
+        // === Fraldas (inclui "troca de fralda" exato da planilha) ===
+        else if (atv.includes("fralda") || atv.includes("xixi") || atv.includes("coco") || 
+                 atv.includes("troca") || atv === "troca de fralda") {
+            ind.f++;
+            dias[dataKey].f++;
+        }
+        // === Medicação ===
+        else if (atv.includes("remédio") || atv.includes("medicacao") || atv.includes("gotas") || 
+                 atv.includes("paracetamol")) {
+            ind.d++;
+            dias[dataKey].d++;
+        }
+
+        // Regurgitação
+        if (obs.includes("regurg") || obs.includes("vomito") || obs.includes("golfada")) {
+            ind.r++;
+        }
+    });
+
+    gerarIA(ind);
+    updateChart('m', 'chartMamada', 'Mamadas', dias, '#fcc6cd');
+    updateChart('s', 'chartSono', 'Sono', dias, '#abdfee');
+    updateChart('f', 'chartFralda', 'Fraldas', dias, '#93d8ad');
+    updateChart('d', 'chartMed', 'Medicação', dias, '#af9bdd');
+
+    renderTimelines(dados);
+}
+
+// ==========================
+// 📋 RENDER TIMELINES
+// ==========================
+
+function renderTimelines(dados) {
+
+    const categorias = [
+        {
+            id: 'timelineMamada',
+            dotClass: 'mamada',
+            filtro: at => at.includes('amamentacao')
+        },
+        {
+            id: 'timelineSono',
+            dotClass: 'sono',
+            filtro: at => at.includes('sono')
+        },
+        {
+            id: 'timelineFralda',
+            dotClass: 'fralda',
+            filtro: at =>
+                at.includes('fralda') ||
+                at.includes('xixi') ||
+                at.includes('coco')
+        },
+        {
+            id: 'timelineMed',
+            dotClass: 'saude',
+            filtro: at =>
+                at.includes('medicacao') ||
+                at.includes('remedio')
+        }
+    ];
+
+    const filtroVal = document.getElementById('filtroData').value;
+    const isHistoricoCompleto = filtroVal === 'todos';
+
+    categorias.forEach(cat => {
+
+        const el = document.getElementById(cat.id);
+
+        if (!el) return;
+
+        el.innerHTML = '';
+
+        // Filtra e ordena CORRETAMENTE
+        const registros = dados
+    .filter(item =>
+        cat.filtro(
+            (item.Atividade || '').toLowerCase()
+        )
+    );
+
+        if (registros.length === 0) {
+            el.innerHTML =
+                '<div class="timeline-empty">Sem registros neste período.</div>';
+            return;
+        }
+
+        // ==========================
+        // HISTÓRICO COMPLETO
+        // ==========================
+
+        if (isHistoricoCompleto) {
+
+            const grupos = {};
+
+            registros.forEach(item => {
+
+                const label = formatarDataExtensa(item.Data);
+
+                if (!grupos[label]) {
+                    grupos[label] = [];
+                }
+
+                grupos[label].push(item);
+            });
+
+            // Ordena grupos por data DESC
+            const datas = Object.keys(grupos).sort((a, b) => {
+                return new Date(grupos[b][0].Data)
+                    - new Date(grupos[a][0].Data);
+            });
+
+            datas.forEach(data => {
+
+                const header = document.createElement('div');
+
+                header.className = 'timeline-date-group';
+                header.textContent = data;
+
+                el.appendChild(header);
+
+                grupos[data].forEach((item, idx) => {
+
+                    el.appendChild(
+                        criarItemTimeline(
+                            item,
+                            cat.dotClass,
+                            idx === grupos[data].length - 1
+                        )
+                    );
+
+                });
+            });
+
+        } else {
+
+            // ==========================
+            // DATA ESPECÍFICA
+            // ==========================
+
+            registros.forEach((item, idx) => {
+
+                el.appendChild(
+                    criarItemTimeline(
+                        item,
+                        cat.dotClass,
+                        idx === registros.length - 1
+                    )
+                );
+
+            });
+        }
+    });
+}
+
+// ==========================
+// 🧱 ITEM DA TIMELINE
+// ==========================
+
+function criarItemTimeline(item, dotClass, isLast) {
+
+    const hora = formatarHorario(item.Horario);
+
+    const obs = (item.Observação || '').trim();
+
+    const div = document.createElement('div');
+
+    div.className = 'timeline-item';
+
+    div.innerHTML = `
+        <div class="tl-dot-col">
+            <div class="tl-dot ${dotClass}"></div>
+
+            ${!isLast
+                ? '<div class="tl-line"></div>'
+                : ''
+            }
+        </div>
+
+        <div class="tl-content">
+
+            <div class="tl-hora">
+                ${hora || '—'}
+            </div>
+
+            ${obs
+                ? `<div class="tl-obs" title="${obs}">
+                        ${obs}
+                   </div>`
+                : ''
+            }
+
+        </div>
+    `;
+
+    return div;
+}
+
+// ==========================
+// 🤖 IA
+// ==========================
+
+function gerarIA(ind) {
+
+    const getF = lista =>
+        lista[Math.floor(Math.random() * lista.length)];
+
+    let insights = [];
+
+    // ==========================
+    // ANÁLISE CRUZADA
+    // ==========================
+
+    if (ind.m < 5 && ind.s < 3) {
+
+        insights.push(`
+            <div class="relatorio-item cruzado-alerta">
+                ${getF(frasesIA.analise_cruzada.alerta_sono_alimentacao)}
+            </div>
+        `);
+
+    } else if (ind.m >= 7 && ind.s >= 5) {
+
+        insights.push(`
+            <div class="relatorio-item cruzado-bom">
+                ${getF(frasesIA.analise_cruzada.bom_desenvolvimento)}
+            </div>
+        `);
+
+    } else if (ind.m > 10 && ind.r > 2) {
+
+        insights.push(`
+            <div class="relatorio-item cruzado-alerta">
+                ${getF(frasesIA.analise_cruzada.alta_amamentacao_desconforto)}
+            </div>
+        `);
     }
-    async function init() {
+
+    // ==========================
+    // INSIGHTS INDIVIDUAIS
+    // ==========================
+
+    insights.push(`
+        <div class="relatorio-item">
+            🍼 ${ind.m < 5
+                ? getF(frasesIA.amamentacao.baixo)
+                : getF(frasesIA.amamentacao.ideal)
+            }
+        </div>
+    `);
+
+    insights.push(`
+        <div class="relatorio-item">
+            🧷 ${ind.f < 5
+                ? getF(frasesIA.fraldas.baixo)
+                : getF(frasesIA.fraldas.otimo)
+            }
+        </div>
+    `);
+
+    document.getElementById("relatorioIA").innerHTML =
+        insights.join("");
+}
+
+// ==========================
+// 🚀 INIT
+// ==========================
+
+async function init() {
+
     const loader = document.getElementById('loader');
     const content = document.getElementById('app-content');
-    
+
     try {
+
+        // ==========================
+        // FRASES
+        // ==========================
+
         try {
+
             const resF = await fetch('frases.json');
-            if (resF.ok) frasesIA = await resF.json();
-        } catch(e) { 
-            console.warn("Usando frases padrão."); 
+
+            if (resF.ok) {
+                frasesIA = await resF.json();
+            }
+
+        } catch (e) {
+
+            console.warn("Usando frases padrão.");
+
         }
 
+        // ==========================
+        // DADOS
+        // ==========================
+
         const resD = await fetch(API);
-        if (!resD.ok) throw new Error();
+
+        if (!resD.ok) {
+            throw new Error();
+        }
+
         dadosOriginais = await resD.json();
-        
+
+        // ==========================
+        // TRANSIÇÃO
+        // ==========================
+
         loader.style.opacity = '0';
-        setTimeout(() => { 
-            loader.style.visibility = 'hidden'; 
-            content.style.visibility = 'visible'; 
-            content.style.opacity = '1'; 
+
+        setTimeout(() => {
+
+            loader.style.visibility = 'hidden';
+
+            content.style.visibility = 'visible';
+
+            content.style.opacity = '1';
+
         }, 600);
-        
+
+        // ==========================
+        // INICIALIZA
+        // ==========================
+
         popularFiltro(dadosOriginais);
+
         processar(dadosOriginais);
+
     } catch (e) {
-        document.getElementById("relatorioIA").innerHTML = "❌ Erro ao carregar dados da planilha.";
+
+        console.error(e);
+
+        document.getElementById("relatorioIA").innerHTML =
+            "❌ Erro ao carregar dados da planilha.";
+
         loader.style.display = 'none';
+
         content.style.visibility = 'visible';
+
         content.style.opacity = '1';
     }
 }
 
-// Inicialização
-(async function() {
+// ==========================
+// ▶️ START
+// ==========================
+
+(async function () {
+
     await carregarFAQ();
+
     init();
+
 })();
