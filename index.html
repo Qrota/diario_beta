@@ -487,6 +487,26 @@ footer{
 </footer>
 
 <script>
+    // 📱 FULLSCREEN (ROBUSTO)
+// ==========================
+function entrarFullscreen() {
+    const el = document.documentElement;
+
+    if (document.fullscreenElement) return;
+
+    if (el.requestFullscreen) {
+        el.requestFullscreen();
+    } else if (el.webkitRequestFullscreen) { // Safari
+        el.webkitRequestFullscreen();
+    } else if (el.msRequestFullscreen) { // IE11
+        el.msRequestFullscreen();
+    }
+}
+
+// Ativa em qualquer interação (mais confiável)
+["click", "touchstart"].forEach(evt => {
+    document.addEventListener(evt, entrarFullscreen);
+});    
 
 const API_URL =
 "https://script.google.com/macros/s/AKfycbzLRP4mT3E8HVNS4Aa-VG6AGgE5LtezZ0A0JmRS9s43dGm3vfRz0g1pRtIU7yRjVQZ6/exec";
