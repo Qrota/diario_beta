@@ -481,3 +481,117 @@ body.night .tl-obs  { color: #9ca3af; }
 body.night .tl-line { background: rgba(255,255,255,0.08); }
 body.night .timeline-item:hover { background: rgba(255,255,255,0.05); }
 body.night .activity-timeline::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+/* ======================================
+   EFEITO LIVRO / CARD GIRANDO
+====================================== */
+
+.flip-card{
+    perspective: 1600px;
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* estrutura interna */
+.flip-card-inner{
+    position: relative;
+    width: 100%;
+    min-height: 390px;
+    transition: transform 0.9s cubic-bezier(.22,.61,.36,1);
+    transform-style: preserve-3d;
+}
+
+/* quando abrir */
+.flip-card.open .flip-card-inner{
+    transform: rotateY(-180deg);
+}
+
+/* frente e verso */
+.flip-card-front,
+.flip-card-back{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+
+    background: #f7f5f1;
+    border-radius: 24px;
+    border: 1px solid #ffffff;
+
+    box-shadow:
+        0 2px 2px rgba(0, 0, 0, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+    padding: 20px;
+}
+
+/* frente */
+.flip-card-front{
+    z-index: 2;
+    cursor: pointer;
+
+    transform-origin: left center;
+
+    transition:
+        transform 0.9s cubic-bezier(.22,.61,.36,1),
+        box-shadow 0.5s ease;
+}
+
+/* efeito de levantar */
+.flip-card:hover .flip-card-front{
+    transform: translateY(-3px);
+}
+
+/* verso */
+.flip-card-back{
+    transform: rotateY(180deg);
+    overflow-y: auto;
+}
+
+/* sombra dinâmica ao abrir */
+.flip-card.open .flip-card-front{
+    box-shadow:
+        -25px 10px 40px rgba(0,0,0,0.18);
+}
+
+/* botão voltar */
+.btn-voltar{
+    border: none;
+    background: #ffe4e4;
+    color: #ffffff;
+
+    padding: 06px 06px;
+    border-radius: 50px;
+
+    font-size: 0.85rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    margin-bottom: 4px;
+
+    transition: all .25s ease;
+}
+
+.btn-voltar:hover{
+    transform: translateY(-2px);
+    opacity: .9;
+}
+
+/* título do verso */
+.flip-card-back h4{
+    margin-bottom: 14px;
+    font-size: 1.1rem;
+    color: #2f2a28;
+}
+
+/* mobile */
+@media(max-width:768px){
+
+    .flip-card-inner{
+        min-height: 240px;
+    }
+
+}
