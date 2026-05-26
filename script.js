@@ -1134,7 +1134,27 @@ async function init() {
         content.style.opacity = '1';
     }
 }
+/* ======================================
+   EFEITO ABRIR CARD COMO LIVRO
+====================================== */
 
+document.querySelectorAll('.flip-card').forEach(card => {
+
+    const front = card.querySelector('.flip-card-front');
+    const voltar = card.querySelector('.btn-voltar');
+
+    // abrir
+    front.addEventListener('click', () => {
+        card.classList.add('open');
+    });
+
+    // fechar
+    voltar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        card.classList.remove('open');
+    });
+
+});
 // ==========================
 // ▶️ START
 // ==========================
