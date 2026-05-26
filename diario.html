@@ -11,7 +11,7 @@
     <title>Assistente Inteligente | Diário do Gabriel</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles2.css">
 </head>
 <body>
 
@@ -73,6 +73,7 @@
     </div>
 
     <div class="glass-card aurea-insight" id="cardRelatorio">
+        
         <div class="aurea-header">
             <div class="aurea-avatar"><i class="fas fa-sparkles"></i></div>
             <div>
@@ -87,61 +88,145 @@
 
  <div class="grid">
 
-    <div class="glass-card card-mamada">
-        <h3>
-            <span class="icon-circle icon-blue">
-                <img src="mamadeira.png" alt="Ícone mamadeira">
-            </span>
-            Nutrição
-        </h3>
+    <div class="glass-card card-mamada flip-card">
 
-        <div class="chart-container">
-            <canvas id="chartMamada"></canvas>
+    <div class="flip-card-inner">
+
+        <!-- FRENTE -->
+        <div class="flip-card-front">
+
+            <h3>
+                <span class="icon-circle icon-blue">
+                    <img src="mamadeira.png" alt="Ícone mamadeira">
+                </span>
+                Nutrição
+            </h3>
+
+            <div class="chart-container">
+                <canvas id="chartMamada"></canvas>
+            </div>
+
         </div>
-        <div class="activity-timeline" id="timelineMamada"></div>
+
+        <!-- VERSO -->
+        <div class="flip-card-back">
+
+            <button class="btn-voltar">← Voltar</button>
+
+            <h4>Detalhes da Nutrição</h4>
+
+            <div class="activity-timeline" id="timelineMamada"></div>
+
+        </div>
+
     </div>
 
-    <div class="glass-card card-sono">
-        <h3>
-            <span class="icon-circle icon-pink">
-                <img src="lua-crescente.png" alt="Ícone lua">
-            </span>
-            Descanso
-        </h3>
+</div>
 
-        <div class="chart-container">
-            <canvas id="chartSono"></canvas>
+    <div class="glass-card card-sono flip-card">
+
+    <div class="flip-card-inner">
+
+        <!-- FRENTE -->
+        <div class="flip-card-front">
+
+            <h3>
+                <span class="icon-circle icon-pink">
+                    <img src="lua-crescente.png" alt="Ícone lua">
+                </span>
+                Descanso
+            </h3>
+
+            <div class="chart-container">
+                <canvas id="chartSono"></canvas>
+            </div>
+
         </div>
-        <div class="activity-timeline" id="timelineSono"></div>
+
+        <!-- VERSO -->
+        <div class="flip-card-back">
+
+            <button class="btn-voltar">← Voltar</button>
+
+            <h4>Detalhes do Descanso</h4>
+
+            <div class="activity-timeline" id="timelineSono"></div>
+
+        </div>
+
     </div>
 
-    <div class="glass-card card-fralda">
-        <h3>
-            <span class="icon-circle icon-blue">
-                <img src="fralda.png" alt="Ícone fralda">
-            </span>
-            Fraldas
-        </h3>
+</div>
 
-        <div class="chart-container">
-            <canvas id="chartFralda"></canvas>
+    <div class="glass-card card-fralda flip-card">
+
+    <div class="flip-card-inner">
+
+        <!-- FRENTE -->
+        <div class="flip-card-front">
+
+            <h3>
+                <span class="icon-circle icon-blue">
+                    <img src="fralda.png" alt="Ícone fralda">
+                </span>
+                Fraldas
+            </h3>
+
+            <div class="chart-container">
+                <canvas id="chartFralda"></canvas>
+            </div>
+
         </div>
-        <div class="activity-timeline" id="timelineFralda"></div>
+
+        <!-- VERSO -->
+        <div class="flip-card-back">
+
+            <button class="btn-voltar">← Voltar</button>
+
+            <h4>Detalhes das Fraldas</h4>
+
+            <div class="activity-timeline" id="timelineFralda"></div>
+
+        </div>
+
     </div>
 
-    <div class="glass-card card-med">
-        <h3>
-            <span class="icon-circle icon-pink">
-                <img src="pilulas.png" alt="Ícone pilulas">
-            </span>
-            Saúde
-        </h3>
+</div>
 
-        <div class="chart-container">
-            <canvas id="chartMed"></canvas>
+    <div class="glass-card card-med flip-card">
+
+    <div class="flip-card-inner">
+
+        <!-- FRENTE -->
+        <div class="flip-card-front">
+
+            <h3>
+                <span class="icon-circle icon-pink">
+                    <img src="pilulas.png" alt="Ícone pilulas">
+                </span>
+                Saúde
+            </h3>
+
+            <div class="chart-container">
+                <canvas id="chartMed"></canvas>
+            </div>
+
         </div>
-        <div class="activity-timeline" id="timelineMed"></div>
-    </div>
+
+        <!-- VERSO -->
+        <div class="flip-card-back">
+
+            <button class="btn-voltar">← Voltar</button>
+
+            <h4>Detalhes da Saúde</h4>
+
+            <div class="activity-timeline" id="timelineMed"></div>
+
+        </div>
+
+    
+
+</div>
 
 </div>
 
