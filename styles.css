@@ -558,9 +558,9 @@ body.night .activity-timeline::-webkit-scrollbar-thumb { background: rgba(255,25
 
 /* botão voltar */
 .btn-voltar{
-    border: none;
-    background: #fcc8cf;
-    color: #ffffff;
+    border: 1px solid #9bf2fd;
+    background: #fcc8cf00;
+    color: #8b8b8b;
 
     padding: 06px 06px;
     border-radius: 50px;
