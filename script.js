@@ -1141,7 +1141,8 @@ async function init() {
 document.querySelectorAll('.flip-card').forEach(card => {
 
     const front = card.querySelector('.flip-card-front');
-    const voltar = card.querySelector('.btn-voltar');
+    
+    const voltar= card.querySelector('.flip-card-back');
 
     // abrir
     front.addEventListener('click', () => {
