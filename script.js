@@ -1,5 +1,4 @@
-// 📱 FULLSCREEN (ROBUSTO)
-// ==========================
+
 function entrarFullscreen() {
     const el = document.documentElement;
 
@@ -7,22 +6,25 @@ function entrarFullscreen() {
 
     if (el.requestFullscreen) {
         el.requestFullscreen();
-    } else if (el.webkitRequestFullscreen) { // Safari
+    } else if (el.webkitRequestFullscreen) { 
         el.webkitRequestFullscreen();
-    } else if (el.msRequestFullscreen) { // IE11
+    } else if (el.msRequestFullscreen) { 
         el.msRequestFullscreen();
     }
 }
-
-// Ativa em qualquer interação (mais confiável)
 ["click", "touchstart"].forEach(evt => {
     document.addEventListener(evt, entrarFullscreen);
 });    
-    // ==========================
-    // 🌐 CONFIG API
-    // ==========================
-    const API = "https://script.google.com/macros/s/AKfycbxt0iLWP6u6xmcVXf0rL7SGqA7A2RI_Ulkdkwp-QERA8bCFkJ0DeD42gBeoGoPem01M/exec";
-    let dadosOriginais = [];
+const p1 = "aHR0cHM6Ly9zY3JpcHQu";
+const p2 = "Z29vZ2xlLmNvbS9tYWNy";
+const p3 = "b3Mvcy9BS2Z5Y2J4dDBp";
+const p4 = "TFdQNnU2eG1jVlhmMHJM";
+const p5 = "N1NHcUE3QTJSSV9VbGtk";
+const p6 = "a3dwLVFFUkE4YkNGa0ow";
+const p7 = "RGVENDJnQmVvR29QZW0w";
+const p8 = "MU0vZXhlYw==";
+const API = atob(p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8);    
+let dadosOriginais = [];
     let frasesIA = {
         amamentacao: { critico: ["Nenhuma mamada registrada neste período. Verifique se esqueceu de anotar.",
         "Atenção urgente: sem registros de amamentação até o momento.",
@@ -266,17 +268,9 @@ function entrarFullscreen() {
             ]
         }
     };
-    
     let charts = {};
-
-    // ==========================
-    // 🧠 CHAT ÁUREA - FALLBACK EMBUTIDO
-    // ==========================
     let baseFAQ = null;
     let historicoChat = [];
-    
-
-    // CORREÇÃO: Preenchimento das intents padrões voltadas para a rotina do bebê na ausência do arquivo externo
     const FALLBACK_FAQ = {
         intents: [
             {
@@ -409,14 +403,12 @@ function entrarFullscreen() {
         }
         return melhorResposta;
     }
-
-    // CORREÇÃO CRÍTICA: Função auxiliar para compilar um resumo legível dos dados da planilha para a IA consumir
     function compilarContextoPlanilha() {
     if (!window.dadosOriginais || window.dadosOriginais.length === 0) {
         return "Nenhum dado registrado na planilha atualmente.";
     }
     
-    const ultimosRegistros = window.dadosOriginais.slice(-30); // aumentei um pouco
+    const ultimosRegistros = window.dadosOriginais.slice(-30); 
     
     let resumo = "📋 ÚLTIMOS REGISTROS DO BEBÊ (da planilha):\n\n";
     
@@ -433,9 +425,8 @@ function entrarFullscreen() {
 }
 
     async function consultarIAGenerativa(pergunta) {
-        const URL = !"https://script.google.com/macros/s/AKfycbwk5ty8T8vpqibAbETpS24ah1ZQPYLoRgBTozH1DCTwxldZtcNBMIZ2bIheePlFTIQ/exec";
+        const URL = "https://script.google.com/macros/s/AKfycbw4b9A2HdSY2EBST5JFkgFfpp3t6bX0LyImOIdWLIyG4o7LORdZcgW5hiqQng5MHx4/exec";
 
-        // CORREÇÃO: Junta os dados extraídos da planilha do bebê dentro do prompt do sistema
         const contextoPlanilha = compilarContextoPlanilha();
 
         const promptSistema = `
@@ -562,37 +553,37 @@ async function sendMessage() {
     const texto = input.value.trim();
     if (!texto) return;
 
-    // 💬 Usuário envia mensagem
+    
     appendMsg(texto, "user");
     input.value = "";
     
-    // Atualiza memória (histórico)
+   
     historicoChat.push({ role: "user", text: texto });
 
-    // 🧠 Mostra indicador de pensamento
+    
     const chatBody = document.getElementById("chatBody");
     const thinking = createTypingIndicator();
     chatBody.appendChild(thinking);
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    // 1. Tenta buscar no FAQ local
+    
     let resposta = responderAurea(texto);
 
-    // 2. Se não encontrou no FAQ, chama a API do Gemini
+    
     if (resposta === null) {
         resposta = await consultarIAGenerativa(texto);
     } else {
-        // Se achou no local, apenas um delay curto para parecer natural
+       
         await new Promise(resolve => setTimeout(resolve, 800));
     }
 
-    // Remove indicador de pensamento
+    
     removeTypingIndicator();
 
-    // Atualiza memória da resposta
+    
     historicoChat.push({ role: "model", text: resposta });
 
-    // 📝 Cria elemento da resposta e aplica o efeito de digitação
+   
     const msgElement = document.createElement("div");
     msgElement.className = "msg aurea";
     chatBody.appendChild(msgElement);
@@ -600,9 +591,7 @@ async function sendMessage() {
 
     await typeWriter(msgElement, resposta);
 }
-    // ==========================
-// 📊 DADOS E GRÁFICOS
-// ==========================
+   
 
 function updateChart(id, ctxId, label, dias, color) {
     if (charts[id]) charts[id].destroy();
@@ -634,9 +623,6 @@ function updateChart(id, ctxId, label, dias, color) {
     });
 }
 
-// ==========================
-// 📅 HELPERS DE DATA
-// ==========================
 
 function formatarDataBR(dataStr) {
     if (!dataStr) return '';
@@ -661,27 +647,20 @@ function formatarDataExtensa(dataStr) {
     });
 }
 
-// ==========================
-// ⏰ HELPERS DE HORÁRIO
-// ==========================
 
-/**
- * Extrai HH:MM de qualquer formato.
- * CORREÇÃO: Mais robusta para diferentes formatos de entrada.
- */
 function formatarHorario(horario) {
     if (!horario) return '—';
 
     const str = String(horario).trim();
 
-    // Tenta encontrar padrão HH:MM
+    
     let match = str.match(/(\d{1,2}):(\d{2})/);
     
     if (match) {
         return `${match[1].padStart(2, '0')}:${match[2]}`;
     }
     
-    // Se for número tipo 22.5 (horas decimais)
+    
     const decimalMatch = str.match(/^(\d{1,2})[,.](\d+)$/);
     if (decimalMatch) {
         const horas = parseInt(decimalMatch[1]);
@@ -692,11 +671,7 @@ function formatarHorario(horario) {
     return '—';
 }
 
-/**
- * Converte data + hora em timestamp confiável.
- * CORREÇÃO: Respeita EXATAMENTE o horário registrado na planilha,
- * sem tentar adivinhar se pertence ao dia anterior.
- */
+
 function obterTimestamp(item) {
     if (!item.Data) return 0;
 
@@ -709,8 +684,7 @@ function obterTimestamp(item) {
         [hora, minuto] = horarioStr.split(':').map(Number);
     }
 
-    // CORREÇÃO: Usa o horário exatamente como está na planilha
-    // Exemplo: se Data é 25/05/2026 e Horario é 22:00, usa 25/05/2026 22:00
+    
     return new Date(
         dataBase.getFullYear(),
         dataBase.getMonth(),
@@ -719,9 +693,7 @@ function obterTimestamp(item) {
         minuto
     ).getTime();
 }
-// ==========================
-// 🔍 FILTROS
-// ==========================
+
 
 function popularFiltro(dados) {
     const s = document.getElementById("filtroData");
@@ -762,9 +734,7 @@ function aplicarFiltro() {
     processar(filtrados);
 }
 
-// ==========================
-// 📈 PROCESSAMENTO
-// ==========================
+
 
 function processar(dados) {
     let ind = { m: 0, s: 0, f: 0, d: 0, r: 0 };
@@ -779,32 +749,32 @@ function processar(dados) {
         const atv = (item.Atividade || '').toLowerCase().trim();
         const obs = (item.Observação || '').toLowerCase();
 
-        // === Mamadas (inclui "amamentacao" exato da planilha) ===
+        
         if (atv.includes("amamenta") || atv.includes("mamar") || atv.includes("peito") || 
             atv.includes("leite") || atv === "amamentacao") {
             ind.m++;
             dias[dataKey].m++;
         }
-        // === Sono ===
+        
         else if (atv.includes("sono") || atv.includes("dormir") || atv.includes("soneca") || 
                  atv.includes("acordou") || atv === "sono") {
             ind.s++;
             dias[dataKey].s++;
         }
-        // === Fraldas (inclui "troca de fralda" exato da planilha) ===
+        
         else if (atv.includes("fralda") || atv.includes("xixi") || atv.includes("coco") || 
                  atv.includes("troca") || atv === "troca de fralda") {
             ind.f++;
             dias[dataKey].f++;
         }
-        // === Medicação ===
+        
         else if (atv.includes("remédio") || atv.includes("medicacao") || atv.includes("gotas") || 
                  atv.includes("paracetamol")) {
             ind.d++;
             dias[dataKey].d++;
         }
 
-        // Recreação 
+        
         if (obs.includes("recreacao") || obs.includes("tapetinho") || obs.includes("passeio") || obs.includes("brincar") || obs.includes("brincadeira")) {
             ind.r++;
             dias[dataKey].r = (dias[dataKey].r || 0) + 1;
@@ -817,12 +787,11 @@ function processar(dados) {
     updateChart('f', 'chartFralda', 'Fraldas', dias, '#93d8ad');
     updateChart('d', 'chartMed', 'Medicação', dias, '#af9bdd');
     updateChart('r', 'chartRecreacao', 'Recreação', dias, '#f7c27e');
+
     renderTimelines(dados);
 }
 
-// ==========================
-// 📋 RENDER TIMELINES
-// ==========================
+
 
 function renderTimelines(dados) {
 
@@ -851,6 +820,13 @@ function renderTimelines(dados) {
             filtro: at =>
                 at.includes('medicacao') ||
                 at.includes('remedio')
+        },
+        {
+            id: 'timelineRecreacao',
+            dotClass: 'recreacao',
+            filtro: at =>
+                at.includes('recreacao') ||
+                at.includes('brincar')
         }
     ];
 
@@ -865,7 +841,7 @@ function renderTimelines(dados) {
 
         el.innerHTML = '';
 
-        // Filtra e ordena CORRETAMENTE
+        
         const registros = dados
     .filter(item =>
         cat.filtro(
@@ -879,9 +855,7 @@ function renderTimelines(dados) {
             return;
         }
 
-        // ==========================
-        // HISTÓRICO COMPLETO
-        // ==========================
+        
 
         if (isHistoricoCompleto) {
 
@@ -898,7 +872,7 @@ function renderTimelines(dados) {
                 grupos[label].push(item);
             });
 
-            // Ordena grupos por data DESC
+            
             const datas = Object.keys(grupos).sort((a, b) => {
                 return new Date(grupos[b][0].Data)
                     - new Date(grupos[a][0].Data);
@@ -928,9 +902,7 @@ function renderTimelines(dados) {
 
         } else {
 
-            // ==========================
-            // DATA ESPECÍFICA
-            // ==========================
+            
 
             registros.forEach((item, idx) => {
 
@@ -947,9 +919,7 @@ function renderTimelines(dados) {
     });
 }
 
-// ==========================
-// 🧱 ITEM DA TIMELINE
-// ==========================
+
 
 function criarItemTimeline(item, dotClass, isLast) {
 
@@ -990,9 +960,6 @@ function criarItemTimeline(item, dotClass, isLast) {
     return div;
 }
 
-// ==========================
-// 🤖 IA
-// ==========================
 
 function gerarIA(ind) {
 
@@ -1001,9 +968,7 @@ function gerarIA(ind) {
 
     let insights = [];
 
-    // ==========================
-    // ANÁLISE CRUZADA
-    // ==========================
+
 
     if (ind.m < 5 && ind.s < 3) {
 
@@ -1030,10 +995,7 @@ function gerarIA(ind) {
         `);
     }
 
-    // ==========================
-    // INSIGHTS INDIVIDUAIS
-    // ==========================
-
+    
     insights.push(`
         <div class="relatorio-item">
             🍼 ${ind.m < 5
@@ -1056,9 +1018,7 @@ function gerarIA(ind) {
         insights.join("");
 }
 
-// ==========================
-// 🚀 INIT
-// ==========================
+
 
 async function init() {
 
@@ -1067,9 +1027,7 @@ async function init() {
 
     try {
 
-        // ==========================
-        // FRASES
-        // ==========================
+        
 
         try {
 
@@ -1085,9 +1043,7 @@ async function init() {
 
         }
 
-        // ==========================
-        // DADOS
-        // ==========================
+        
 
         const resD = await fetch(API);
 
@@ -1097,9 +1053,7 @@ async function init() {
 
         dadosOriginais = await resD.json();
 
-        // ==========================
-        // TRANSIÇÃO
-        // ==========================
+       
 
         loader.style.opacity = '0';
 
@@ -1113,9 +1067,7 @@ async function init() {
 
         }, 600);
 
-        // ==========================
-        // INICIALIZA
-        // ==========================
+        
 
         popularFiltro(dadosOriginais);
 
@@ -1135,31 +1087,28 @@ async function init() {
         content.style.opacity = '1';
     }
 }
-/* ======================================
-   EFEITO ABRIR CARD COMO LIVRO
-====================================== */
+
 
 document.querySelectorAll('.flip-card').forEach(card => {
 
     const front = card.querySelector('.flip-card-front');
     
-    const voltar= card.querySelector('.flip-card-back');
+    const voltar = card.querySelector('.flip-card-back');
 
-    // abrir
+    
     front.addEventListener('click', () => {
         card.classList.add('open');
     });
 
-    // fechar
     voltar.addEventListener('click', (e) => {
         e.stopPropagation();
         card.classList.remove('open');
     });
 
 });
-// ==========================
-// ▶️ START
-// ==========================
+
+
+
 
 (async function () {
 
