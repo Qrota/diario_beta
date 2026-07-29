@@ -804,9 +804,10 @@ function processar(dados) {
             dias[dataKey].d++;
         }
 
-        // Regurgitação
-        if (obs.includes("regurg") || obs.includes("vomito") || obs.includes("golfada")) {
+        // Recreação 
+        if (obs.includes("recreacao") || obs.includes("tapetinho") || obs.includes("passeio") || obs.includes("brincar") || obs.includes("brincadeira")) {
             ind.r++;
+            dias[dataKey].r = (dias[dataKey].r || 0) + 1;
         }
     });
 
@@ -815,7 +816,7 @@ function processar(dados) {
     updateChart('s', 'chartSono', 'Sono', dias, '#abdfee');
     updateChart('f', 'chartFralda', 'Fraldas', dias, '#93d8ad');
     updateChart('d', 'chartMed', 'Medicação', dias, '#af9bdd');
-
+    updateChart('r', 'chartRecreacao', 'Recreação', dias, '#f7c27e');
     renderTimelines(dados);
 }
 
